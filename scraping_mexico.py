@@ -6,9 +6,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import goslate
-
 """
-The site itself has a button to change french into english
+This website can track more than one shipment
+It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
 
 options = Options()
@@ -18,13 +18,18 @@ driver = webdriver.Chrome(
     options=options,
     # other properties...
 )
-driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=CY139490872US&searchKind=S002&locale=en')
+driver.get('')
 #driver.maximize_window()
-driver.implicitly_wait(30)
+driver.implicitly_wait(100)
+track = driver.find_element(By.NAME,'')
+track.send_keys('')
+track.send_keys(Keys.RETURN)
+driver.implicitly_wait(20)
 
-
-element = driver.find_element(By.CLASS_NAME,'indent')
+element = driver.find_element(By.CLASS_NAME,'')
 text = (element.get_attribute("innerText"))
 print(text)
-#divs = element.find_element(By.TAG_NAME,'')
+gs = goslate.Goslate()
+translated_text = gs.translate(text, 'en')
+print(translated_text)
 #driver.quit()
