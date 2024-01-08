@@ -47,7 +47,7 @@ def get_trackinginfo(trackng_num):
                 elif j.get_attribute('class') == "correos-ui-tracking-stepper__desc sc-correos-ui-tracking-stepper":
                     #print(j.get_attribute('innerText'))
                     EventDesc.append(j.get_attribute("innerText"))
-
+    #driver.quit()
     track_num = []
     Dates = []
     Times = []
@@ -69,7 +69,7 @@ def get_trackinginfo(trackng_num):
     'EventLocation' : Loc
     }
     df = pd.DataFrame(Data)
-    print(df)
+    print(df[['EventDesc','EventDate','EventTime','EventLocation']])
 
 tracking_num ='CY139353845US'
 get_trackinginfo(tracking_num)
@@ -87,9 +87,6 @@ obj = soup.find_all('div',class__= "correos-ui-tracking-stepper__date sc-correos
 print(obj)"""
 #correos-ui-tracking-stepper__date sc-correos-ui-tracking-stepper
 #correos-ui-tracking-stepper__desc sc-correos-ui-tracking-stepper
-#driver.quit()
-
 
 #//*[@id="private-area-content"]/correos-cdk-section-box[1]/div/div/div/div[2]/div[1]/correos-cdk-shipping-card/div/div[3]/div/correos-ui-tracking-stepper/div/div/div[3]/div/div/div[1]/div/div/div[2]/span[1]
 #//*[@id="private-area-content"]/correos-cdk-section-box[1]/div/div/div/div[2]/div[1]/correos-cdk-shipping-card/div/div[3]/div/correos-ui-tracking-stepper/div/div/div[3]/div/div/div[1]/div/div/div[2]/span[2]
-#
