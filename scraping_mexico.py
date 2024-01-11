@@ -5,7 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-import goslate
+from deep_translator import GoogleTranslator
 """
 This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30

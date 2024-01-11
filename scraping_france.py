@@ -5,7 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-
+from deep_translator import GoogleTranslator
 """
 The site itself has a button to change french into english
 """
@@ -25,26 +25,17 @@ def get_trackinginfo(trackng_num):
     track.send_keys(Keys.RETURN)
     driver.implicitly_wait(20)
 
-    #element = driver.find_element(By.CLASS_NAME,'correos-ui-tracking-stepper__root.vertical.sc-correos-ui-tracking-stepper.sc-correos-ui-tracking-stepper-s')
-    #print(element.get_attribute("innerText"))
-    #print(element)
     date_times = driver.find_elements(By.CLASS_NAME,'showResults__date')
-    #desc = driver.find_elements(By.CLASS_NAME,"correos-ui-tracking-stepper__desc.sc-correos-ui-tracking-stepper")
     EventDate = []
     EventDesc = []
     for i in date_times:
-        #print(i.get_attribute("innerText"))
         parent = i.find_element(By.XPATH,"./..");
-        #print(parent.get_attribute("class"))
         if (parent.get_attribute("class") == "showResults__item" ):
             children = parent.find_elements(By.XPATH,'.//*')
             for j in children:
-                #print(j.get_attribute("innerText"))
                 if j.get_attribute("class") == "showResults__date":
-                    #print(j.get_attribute("innerText"))
                     EventDate.append(j.get_attribute("innerText"))
                 elif j.get_attribute('class') == "showResults__label green":
-                    #print(j.get_attribute('innerText'))
                     EventDesc.append(j.get_attribute("innerText"))
 
     #drver.quit()

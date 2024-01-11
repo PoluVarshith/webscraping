@@ -28,7 +28,6 @@ def get_trackinginfo(trackng_num):
 
     Container = driver.find_element(By.CLASS_NAME,'tracking__history-list')
     CourseEntries = Container.find_elements(By.XPATH,'./*')
-    print(len(CourseEntries))
     EventDate = []
     EventDesc = []
     track_num = []
@@ -40,16 +39,16 @@ def get_trackinginfo(trackng_num):
         date = (children.get_attribute('innerText')).replace('\n',' ')
         details = i.find_element(By.CLASS_NAME,'tracking__history-details')
         time = details.find_element(By.CLASS_NAME,'tracking__history-time').get_attribute('innerText')
-        print(date,time)
+        #print(date,time)
         desc = details.find_element(By.CLASS_NAME,'tracking__history-status').get_attribute('innerText')
         desc = GoogleTranslator(source='auto', target='en').translate(desc)
-        print((desc))
+        #print((desc))
         try:
             loc = details.find_element(By.CLASS_NAME,'tracking__history-location').get_attribute('innerText')
             #loc = GoogleTranslator(source='auto' , target='en').translate(loc)
         except:
             loc = '-'
-        print(loc)
+        #print(loc)
         track_num.append(trackng_num)
         EventDesc.append(desc)
         Dates.append(date)
@@ -72,33 +71,3 @@ def get_trackinginfo(trackng_num):
 
 tracking_num ='CJ499904901US'
 get_trackinginfo(tracking_num)
-
-"""
-driver.get('')
-#driver.maximize_window()
-driver.implicitly_wait(50)
-track = driver.find_element(By.NAME,'tracking_search')
-track.send_keys('')
-track.send_keys(Keys.RETURN)
-driver.implicitly_wait(20)
-
-element = driver.find_element(By.CLASS_NAME,'tracking__history')
-text = (element.get_attribute("innerText"))
-print(text)
-gs = goslate.Goslate()
-translated_text = gs.translate(text, 'en')
-print(translated_text)
-#driver.quit()
-
-from textblob import TextBlob
-import googletrans
-from googletrans import Translator
-import goslate
-
-#gs = goslate.Goslate()
-#tran_desc = gs.translate(desc, 'en')
-#translator = Translator()
-#desc = translator.translate(desc , dest ='en').text
-#blob = TextBlob(desc)
-#desc = blob.translate(to='en')
-"""

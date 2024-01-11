@@ -37,22 +37,18 @@ def get_trackinginfo(trackng_num):
     Times = []
     Loc = []
     for i in CourseEntries:
-        date = i.get_attribute('innerText')
-        print(date)
-        c = Container.find_elements(By.XPATH,'../')
-        children = i.find_element(By.CLASS_NAME,'tracking__history-date')
-        details = i.find_element(By.CLASS_NAME,'tracking__history-details')
-        time = details.find_element(By.CLASS_NAME,'tracking__history-time').get_attribute('innerText')
-        print(date,time)
-        desc = details.find_element(By.CLASS_NAME,'tracking__history-status').get_attribute('innerText')
+        date ,time = i.find_element(By.CLASS_NAME,'ng-binding').get_attribute('innerText').split(" ")
+        #print(date,time)
+        desc = i.find_element(By.CLASS_NAME,'text-xs-left.ng-binding').get_attribute('innerText')
         desc = GoogleTranslator(source='auto', target='en').translate(desc)
-        print((desc))
+        #print((desc))
         try:
-            loc = details.find_element(By.CLASS_NAME,'tracking__history-location').get_attribute('innerText')
-            #loc = GoogleTranslator(source='auto' , target='en').translate(loc)
+            j = i.find_elements(By.XPATH,'./*')[2]
+            loc = (j.get_attribute('innerText')).split('\n')[3]
+            loc = GoogleTranslator(source='auto' , target='en').translate(loc)
         except:
             loc = '-'
-        print(loc)
+        #print(loc)
         track_num.append(trackng_num)
         EventDesc.append(desc)
         Dates.append(date)
