@@ -21,7 +21,6 @@ def get_trackinginfo(trackng_num):
     #driver.maximize_window()
     driver.implicitly_wait(100)
     track = driver.find_element(By.NAME,'code')
-    print(track)
     track.send_keys('LV770224450US')
     track.send_keys(Keys.RETURN)
     driver.implicitly_wait(20)
