@@ -32,9 +32,7 @@ def get_trackinginfo(trackng_num):
     Table = driver.find_elements(By.CLASS_NAME,'table.table-sm.table-borderless.history')[0]
     table = Table.find_elements(By.XPATH,'./*')[1]
     #print(table)
-    Container = table.find_elements(By.XPATH,'./*')
-    print(len(Container))
-    CourseEntries = Container.find_elements(By.XPATH,'./*')
+    CourseEntries = table.find_elements(By.XPATH,'./*')
     EventDate = []
     EventDesc = []
     track_num = []
@@ -42,19 +40,15 @@ def get_trackinginfo(trackng_num):
     Times = []
     Loc = []
     for i in CourseEntries:
-        children = i.find_element(By.CLASS_NAME,'tracking__history-date')
-        date = (children.get_attribute('innerText')).replace('\n',' ')
-        details = i.find_element(By.CLASS_NAME,'tracking__history-details')
-        time = details.find_element(By.CLASS_NAME,'tracking__history-time').get_attribute('innerText')
+        entry = i.find_elements(By.CLASS_NAME,'w-25')
+        date,time = entry[0].get_attribute('innerText').split(" ")
         #print(date,time)
-        desc = details.find_element(By.CLASS_NAME,'tracking__history-status').get_attribute('innerText')
-        desc = GoogleTranslator(source='auto', target='en').translate(desc)
+        desc = i.find_element(By.CLASS_NAME,'w-50').get_attribute('innerText')
         #print((desc))
         try:
-            loc = details.find_element(By.CLASS_NAME,'tracking__history-location').get_attribute('innerText')
-            #loc = GoogleTranslator(source='auto' , target='en').translate(loc)
+            loc = entry[1].get_attribute('innerText')
         except:
-            loc = '-'
+            loc = ''
         #print(loc)
         track_num.append(trackng_num)
         EventDesc.append(desc)
