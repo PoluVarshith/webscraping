@@ -7,12 +7,32 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 from deep_translator import GoogleTranslator
 
-import requests
-from bs4 import BeautifulSoup
+from PIL import Image
+from captcha_solver import CaptchaSolver
+
 """
 This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
+def get_captcha(driver, element, path):
+    # now that we have the preliminary stuff out of the way time to get that image :D
+    location = element.location
+    size = element.size
+    # saves screenshot of entire page
+    driver.save_screenshot(path)
+
+    # uses PIL library to open image in memory
+    image = Image.open(path)
+
+    left = location['x']
+    top = location['y']
+    right = location['x'] + size['width']
+    bottom = location['y'] + size['height']
+
+    image = image.crop((left, top, right, bottom))  # defines crop points
+    image.save(path, 'png')  # saves new cropped image
+
+
 def get_trackinginfo(trackng_num):
     options = Options()
     #options.add_argument('--headless=new')
@@ -21,15 +41,25 @@ def get_trackinginfo(trackng_num):
         options=options,
         # other properties...
     )
-    URL = 'https://www.postnord.se/en/our-tools/track-and-trace?shipmentId=' + str(tracking_num)
-    driver.get(URL)
+    driver.get('https://www2.correios.com.br/sistemas/rastreamento/default.cfm')
     #driver.maximize_window()
     driver.implicitly_wait(50)
+    track = driver.find_element(By.ID,'objeto')
+    captcha_entry = driver.find_element(By.ID,'captcha')
+    button = driver.find_element(By.ID,'b-pesquisar')
+    track.send_keys(tracking_num)
+    img = driver.find_element(By.ID,'captcha_image')
+    get_captcha(driver, img, "captcha.png")
+    #captcha solving function
+    
 
-    Table = driver.find_element(By.CLASS_NAME,'')
-    print(Table)
-    table = Table.find_elements(By.XPATH,'./*')
-    print(len(table))
+    captcha_entry.send_keys()
+    #track.send_keys(Keys.RETURN)
+    button.click()
+    driver.implicitly_wait(100)
+
+    Table = driver.find_element(By.CLASS_NAME,'table.table-hover.spacer-xs-top-10.spacer-xs-bottom-0')
+    table = Table.find_elements(By.XPATH,'./*')[1]
     CourseEntries = table.find_elements(By.XPATH,'./*')
     print(len(CourseEntries))
     EventDate = []
@@ -71,5 +101,5 @@ def get_trackinginfo(trackng_num):
     print(df[['EventDesc','EventDate','EventTime','EventLocation']])
 
 
-tracking_num ='LX567513734US'
+tracking_num ='CY139466887US'
 get_trackinginfo(tracking_num)
