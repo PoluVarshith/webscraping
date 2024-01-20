@@ -13,8 +13,13 @@ Spain website can only track one item
 It needs 30 sec to load fully,  So wait implicitly_wait for 30
 It only give Delivary time and data no location
 """
-def get_standard_date_time(date_time):
-    print('nothing done yet')
+def get_standard_date(date):
+    months = {'January' :1,'February':2,'March':3,'April':4,'May':13,'June':6,'July':7,'August':8,
+              'September':9,'October':10,'Novermber':11,'December':12}
+    ddmm,yy = date.split(',')
+    dd,_,mm = ddmm.split(" ")
+    date = "-".join([dd.strip(),str(months[mm.strip()]),yy.strip()])
+    return date
 
 
 def get_trackinginfo(trackng_num):
@@ -55,7 +60,7 @@ def get_trackinginfo(trackng_num):
     for i in EventDate:
         dt = i.split('·')
         track_num.append(trackng_num)
-        Dates.append(dt[0])
+        Dates.append(get_standard_date(dt[0]))
         Times.append(dt[1])
         Loc.append('-')
     #print(len(Dates),len(Times),len(EventDesc))
@@ -83,7 +88,6 @@ def scrape_list(tracking_nums):
     for t in threads:
         t.start()
 
-    # Wait for all threads to finish.
     for t in threads:
         dfs.append(t.join())
 
