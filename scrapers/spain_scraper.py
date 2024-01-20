@@ -6,8 +6,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 from deep_translator import GoogleTranslator
-import create_csv
+import tocsv
 import pandas as pd
+
 """
 Spain website can only track one item
 It needs 30 sec to load fully,  So wait implicitly_wait for 30
@@ -65,13 +66,18 @@ def get_trackinginfo(trackng_num):
     'EventLocation' : Loc
     }
     df = pd.DataFrame(Data)
-    print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    return df
 
-tracking_num ='CY139353845US'
-get_trackinginfo(tracking_num)
-
-#correos-ui-tracking-stepper__date sc-correos-ui-tracking-stepper
-#correos-ui-tracking-stepper__desc sc-correos-ui-tracking-stepper
-
-#//*[@id="private-area-content"]/correos-cdk-section-box[1]/div/div/div/div[2]/div[1]/correos-cdk-shipping-card/div/div[3]/div/correos-ui-tracking-stepper/div/div/div[3]/div/div/div[1]/div/div/div[2]/span[1]
-#//*[@id="private-area-content"]/correos-cdk-section-box[1]/div/div/div/div[2]/div[1]/correos-cdk-shipping-card/div/div[3]/div/correos-ui-tracking-stepper/div/div/div[3]/div/div/div[1]/div/div/div[2]/span[2]
+def scrape_list(tracking_nums):
+    #print(len(tracking_nums))
+    #tracking_num ='CY139353845US'
+    #get_trackinginfo(tracking_num)
+    dfs = []
+    for i in tracking_nums[:2]:
+        dfs.append(get_trackinginfo(i[0]))
+    country_frame = tocsv.country_csv()
+    for i in dfs:
+        country_frame.df = country_frame.df._append(i,ignore_index=True)
+    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    country_frame.write_to_csv()
