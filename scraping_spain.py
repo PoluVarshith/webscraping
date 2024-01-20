@@ -6,9 +6,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 from deep_translator import GoogleTranslator
+import pandas as pd
 """
 Spain website can only track one item
-It needs 30 sec to load fully,  So wai implicitly_wait for 30
+It needs 30 sec to load fully,  So wait implicitly_wait for 30
 It only give Delivary time and data no location
 """
 
@@ -55,7 +56,6 @@ def get_trackinginfo(trackng_num):
         Loc.append('-')
     print(len(Dates),len(Times),len(EventDesc))
 
-    import pandas as pd
     Data = {
     'Tracking Number' : track_num,
     'EventDesc' : EventDesc,

@@ -6,6 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 from deep_translator import GoogleTranslator
+import pandas as pd
 
 from PIL import Image
 from captcha_solver import CaptchaSolver
@@ -89,7 +90,6 @@ def get_trackinginfo(trackng_num):
     print(len(Dates),len(Times),len(EventDesc))
 
     #drver.quit()
-    import pandas as pd
     Data = {
     'Tracking Number' : track_num,
     'EventDesc' : EventDesc,
