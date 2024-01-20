@@ -6,6 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 from deep_translator import GoogleTranslator
+import create_csv
 import pandas as pd
 """
 Spain website can only track one item
@@ -15,7 +16,7 @@ It only give Delivary time and data no location
 
 def get_trackinginfo(trackng_num):
     options = Options()
-    #options.add_argument('--headless=new')
+    options.add_argument('--headless=new')
 
     driver = webdriver.Chrome(
         options=options,
@@ -43,7 +44,7 @@ def get_trackinginfo(trackng_num):
                 elif j.get_attribute('class') == "correos-ui-tracking-stepper__desc sc-correos-ui-tracking-stepper":
                     EventDesc.append(j.get_attribute("innerText"))
 
-    #driver.quit()
+    driver.quit()
     track_num = []
     Dates = []
     Times = []
@@ -54,7 +55,7 @@ def get_trackinginfo(trackng_num):
         Dates.append(dt[0])
         Times.append(dt[1])
         Loc.append('-')
-    print(len(Dates),len(Times),len(EventDesc))
+    #print(len(Dates),len(Times),len(EventDesc))
 
     Data = {
     'Tracking Number' : track_num,
