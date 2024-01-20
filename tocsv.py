@@ -14,6 +14,6 @@ class country_csv:
     
     def write_to_csv(self):
         #print(self.df[['EventDesc','EventDate','EventTime','EventLocation']])
-        self.df.to_csv('info.csv', sep=',', index=False, encoding='utf-8')
+        self.df.to_csv('..\info.csv', sep=',', index=False, encoding='utf-8')
 
     

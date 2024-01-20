@@ -13,6 +13,9 @@ Spain website can only track one item
 It needs 30 sec to load fully,  So wait implicitly_wait for 30
 It only give Delivary time and data no location
 """
+def get_standard_date_time(date_time):
+    print('nothing done yet')
+
 
 def get_trackinginfo(trackng_num):
     options = Options()
