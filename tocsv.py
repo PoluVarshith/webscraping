@@ -13,6 +13,7 @@ class country_csv:
         #print(self.df)
     
     def write_to_csv(self):
-        print(self.df[['EventDesc','EventDate','EventTime','EventLocation']])
-        
+        #print(self.df[['EventDesc','EventDate','EventTime','EventLocation']])
+        self.df.to_csv('info.csv', sep=',', index=False, encoding='utf-8')
+
     

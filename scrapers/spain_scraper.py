@@ -4,11 +4,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 from deep_translator import GoogleTranslator
 import tocsv
 import pandas as pd
-
+import twrv
 """
 Spain website can only track one item
 It needs 30 sec to load fully,  So wait implicitly_wait for 30
@@ -74,8 +73,17 @@ def scrape_list(tracking_nums):
     #tracking_num ='CY139353845US'
     #get_trackinginfo(tracking_num)
     dfs = []
-    for i in tracking_nums[:2]:
-        dfs.append(get_trackinginfo(i[0]))
+    threads =[]
+    for i in tracking_nums[:4]:
+        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],)))
+    
+    for t in threads:
+        t.start()
+
+    # Wait for all threads to finish.
+    for t in threads:
+        dfs.append(t.join())
+
     country_frame = tocsv.country_csv()
     for i in dfs:
         country_frame.df = country_frame.df._append(i,ignore_index=True)
