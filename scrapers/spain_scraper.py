@@ -76,10 +76,11 @@ def get_trackinginfo(trackng_num):
     #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
     return df
 
+#tracking_num ='CY139353845US'
+#get_trackinginfo(tracking_num)
+
 def scrape_list(tracking_nums):
     #print(len(tracking_nums))
-    #tracking_num ='CY139353845US'
-    #get_trackinginfo(tracking_num)
     dfs = []
     threads =[]
     for i in tracking_nums[:4]:

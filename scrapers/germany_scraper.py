@@ -23,7 +23,7 @@ def get_trackinginfo(trackng_num):
     driver.get('https://www.deutschepost.de/de/s/sendungsverfolgung.html?form.sendungsnummer=A0031FFBE60007DDE487')
     driver.implicitly_wait(100)
     track = driver.find_element(By.NAME,'piececode')
-    track.send_keys('LV770291794US')
+    track.send_keys(trackng_num)
     track.send_keys(Keys.RETURN)
     driver.implicitly_wait(20)
 
@@ -40,7 +40,7 @@ def get_trackinginfo(trackng_num):
                 desc = GoogleTranslator(source='auto', target='en').translate(desc)
                 EventDesc.append(desc)
 
-    #drver.quit()
+    driver.quit()
     track_num = []
     Dates = []
     Times = []
@@ -51,7 +51,7 @@ def get_trackinginfo(trackng_num):
         Dates.append(i)
         Times.append('-')
         Loc.append('-')
-    print(len(Dates),len(Times),len(EventDesc))
+    #print(len(Dates),len(Times),len(EventDesc))
 
     Data = {
     'Tracking Number' : track_num,
@@ -62,6 +62,19 @@ def get_trackinginfo(trackng_num):
     }
     df = pd.DataFrame(Data)
     print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    return df
 
-tracking_num ='LV770224450US'
-get_trackinginfo(tracking_num)
+#tracking_num ='LV770224450US'
+#get_trackinginfo(tracking_num)
+
+def scrape_list(tracking_nums):
+    #print(len(tracking_nums))
+    dfs = []
+    for i in tracking_nums[:4]:
+        dfs.append(get_trackinginfo(i[0]))
+
+    country_frame = tocsv.country_csv()
+    for i in dfs:
+        country_frame.df = country_frame.df._append(i,ignore_index=True)
+    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    country_frame.write_to_csv('GERMANY')

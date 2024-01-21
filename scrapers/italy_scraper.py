@@ -4,14 +4,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 from deep_translator import GoogleTranslator
+import tocsv
 import pandas as pd
+import twrv
 """
 This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
-def get_trackinginfo(trackng_num):
+def get_trackinginfo(tracking_num):
     options = Options()
     #options.add_argument('--headless=new')
 
@@ -25,12 +26,12 @@ def get_trackinginfo(trackng_num):
     track = driver.find_element(By.CLASS_NAME,'form-control')
     track.send_keys(tracking_num)
     track.send_keys(Keys.RETURN)
-    driver.implicitly_wait(100)
+    driver.implicitly_wait(30)
 
     Table = driver.find_element(By.CLASS_NAME,'table.table-hover.spacer-xs-top-10.spacer-xs-bottom-0')
     table = Table.find_elements(By.XPATH,'./*')[1]
     CourseEntries = table.find_elements(By.XPATH,'./*')
-    print(len(CourseEntries))
+    #print(len(CourseEntries))
     EventDate = []
     EventDesc = []
     track_num = []
@@ -50,14 +51,14 @@ def get_trackinginfo(trackng_num):
         except:
             loc = '-'
         #print(loc)
-        track_num.append(trackng_num)
+        track_num.append(tracking_num)
         EventDesc.append(desc)
         Dates.append(date)
         Times.append(time)
         Loc.append(loc)
-    print(len(Dates),len(Times),len(EventDesc))
+    #print(len(Dates),len(Times),len(EventDesc))
 
-    #drver.quit()
+    driver.quit()
     Data = {
     'Tracking Number' : track_num,
     'EventDesc' : EventDesc,
@@ -66,8 +67,20 @@ def get_trackinginfo(trackng_num):
     'EventLocation' : Loc
     }
     df = pd.DataFrame(Data)
-    print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    return df
 
+#tracking_num ='LV770247402US'
+#get_trackinginfo(tracking_num)
 
-tracking_num ='LV770247402US'
-get_trackinginfo(tracking_num)
+def scrape_list(tracking_nums):
+    #print(len(tracking_nums))
+    dfs = []
+    for i in tracking_nums[:4]:
+        dfs.append(get_trackinginfo(i[0]))
+
+    country_frame = tocsv.country_csv()
+    for i in dfs:
+        country_frame.df = country_frame.df._append(i,ignore_index=True)
+    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    country_frame.write_to_csv('ITALY')

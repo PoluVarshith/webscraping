@@ -1,6 +1,6 @@
 import scraper
 
-countries = ['SPAIN']
+countries = ['FRANCE']
 
 for i in countries:
     scraper.scrape(i)

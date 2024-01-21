@@ -39,5 +39,5 @@ def get_trackingnums_query(country):
 
 def get_tracknums(trackingnums_query):
     sf_result = execute_sf_query(trackingnums_query)
-    #print(sf_result)
+    print(sf_result)
     return sf_result
