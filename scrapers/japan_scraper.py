@@ -11,6 +11,7 @@ import twrv
 """
 The site itself has a button to change french into english
 """
+COUNTRY = 'JAPAN'
 def get_trackinginfo(tracking_num):
     options = Options()
     #options.add_argument('--headless=new')
@@ -86,8 +87,8 @@ def scrape_list(tracking_nums):
     for t in threads:
         dfs.append(t.join())
 
-    country_frame = tocsv.country_csv()
+    country_frame = tocsv.country_frame(COUNTRY)
     for i in dfs:
         country_frame.df = country_frame.df._append(i,ignore_index=True)
     #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv('JAPAN')
+    country_frame.write_to_csv()

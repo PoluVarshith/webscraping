@@ -13,6 +13,7 @@ Spain website can only track one item
 It needs 30 sec to load fully,  So wait implicitly_wait for 30
 It only give Delivary time and data no location
 """
+COUNTRY  = 'SPAIN'
 def get_standard_date(date):
     months = {'January' :1,'February':2,'March':3,'April':4,'May':13,'June':6,'July':7,'August':8,
               'September':9,'October':10,'Novermber':11,'December':12}
@@ -83,7 +84,7 @@ def scrape_list(tracking_nums):
     #print(len(tracking_nums))
     dfs = []
     threads =[]
-    for i in tracking_nums[:10]:
+    for i in tracking_nums[:2]:
         threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],)))
     
     for t in threads:
@@ -92,8 +93,8 @@ def scrape_list(tracking_nums):
     for t in threads:
         dfs.append(t.join())
 
-    country_frame = tocsv.country_csv()
+    country_frame = tocsv.country_frame(COUNTRY)
     for i in dfs:
         country_frame.df = country_frame.df._append(i,ignore_index=True)
     #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv('SPAIN')
+    country_frame.write_to_csv()

@@ -12,6 +12,7 @@ Spain website can only track one item
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 It only give Delivary time and data no location
 """
+COUNTRY = 'NEW ZEALAND'
 def get_trackinginfo(trackng_num):
     options = Options()
     #options.add_argument('--headless=new')
@@ -49,8 +50,8 @@ def get_trackinginfo(trackng_num):
         Times.append(time)
         Loc.append(loc)
 
-    print(len(Dates),len(Times),len(EventDesc))
-    #drver.quit()
+    #print(len(Dates),len(Times),len(EventDesc))
+    driver.quit()
     Data = {
     'Tracking Number' : track_num,
     'EventDesc' : EventDesc,
@@ -60,7 +61,7 @@ def get_trackinginfo(trackng_num):
     }
     df = pd.DataFrame(Data)
     print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-
+    return df
 
 tracking_num ='LV770506124US'
 get_trackinginfo(tracking_num)

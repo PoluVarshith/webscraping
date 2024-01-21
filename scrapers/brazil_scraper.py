@@ -10,11 +10,11 @@ import pandas as pd
 
 from PIL import Image
 from captcha_solver import CaptchaSolver
-
 """
 This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
+COUNTRY = 'BRAZIL'
 def get_captcha(driver, element, path):
     # now that we have the preliminary stuff out of the way time to get that image :D
     location = element.location

@@ -11,6 +11,7 @@ import pandas as pd
 This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
+COUNTRY = 'NETHERLANDS'
 def get_trackinginfo(trackng_num):
     options = Options()
     #options.add_argument('--headless=new')
@@ -56,9 +57,9 @@ def get_trackinginfo(trackng_num):
         Dates.append(date)
         Times.append(time)
         Loc.append(loc)
-    print(len(Dates),len(Times),len(EventDesc))
+    #print(len(Dates),len(Times),len(EventDesc))
 
-    #drver.quit()
+    driver.quit()
     Data = {
     'Tracking Number' : track_num,
     'EventDesc' : EventDesc,
@@ -68,6 +69,7 @@ def get_trackinginfo(trackng_num):
     }
     df = pd.DataFrame(Data)
     print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    return df
 
 
 tracking_num ='CK139527405NL'

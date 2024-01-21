@@ -12,6 +12,7 @@ import twrv
 This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
+COUNTRY = 'ITALY'
 def get_trackinginfo(tracking_num):
     options = Options()
     #options.add_argument('--headless=new')
@@ -79,8 +80,8 @@ def scrape_list(tracking_nums):
     for i in tracking_nums[:4]:
         dfs.append(get_trackinginfo(i[0]))
 
-    country_frame = tocsv.country_csv()
+    country_frame = tocsv.country_frame(COUNTRY)
     for i in dfs:
         country_frame.df = country_frame.df._append(i,ignore_index=True)
     #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv('ITALY')
+    country_frame.write_to_csv()
