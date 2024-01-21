@@ -24,7 +24,7 @@ def get_standard_date(date):
 
 def get_trackinginfo(trackng_num):
     options = Options()
-    options.add_argument('--headless=new')
+    #options.add_argument('--headless=new')
 
     driver = webdriver.Chrome(
         options=options,
@@ -83,7 +83,7 @@ def scrape_list(tracking_nums):
     #print(len(tracking_nums))
     dfs = []
     threads =[]
-    for i in tracking_nums[:4]:
+    for i in tracking_nums[:10]:
         threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],)))
     
     for t in threads:
