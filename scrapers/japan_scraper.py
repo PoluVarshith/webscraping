@@ -4,16 +4,17 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 from deep_translator import GoogleTranslator
+import tocsv
 import pandas as pd
+import twrv
 """
 The site itself has a button to change french into english
 """
-def get_trackinginfo(trackng_num):
+def get_trackinginfo(tracking_num):
     options = Options()
     #options.add_argument('--headless=new')
-
+    print(tracking_num)
     driver = webdriver.Chrome(
         options=options,
         # other properties...
@@ -23,11 +24,11 @@ def get_trackinginfo(trackng_num):
     driver.implicitly_wait(50)
 
     Table = driver.find_elements(By.CLASS_NAME,'tableType01.txt_c.m_b5')[1]
-    print((Table))
+    #print((Table))
     #table = Table.find_elements(By.XPATH,'./*')[1]
     body = Table.find_elements(By.XPATH,'./*')[0]
     CourseEntries = body.find_elements(By.XPATH,'./*')
-    print(len(CourseEntries))
+    #print(len(CourseEntries))
     EventDate = []
     EventDesc = []
     track_num = []
@@ -56,8 +57,8 @@ def get_trackinginfo(trackng_num):
         Times.append(time)
         Loc.append(loc)
 
-    print(len(Dates),len(Times),len(EventDesc))
-    #drver.quit()
+    #print(len(Dates),len(Times),len(EventDesc))
+    driver.quit()
     Data = {
     'Tracking Number' : track_num,
     'EventDesc' : EventDesc,
@@ -67,7 +68,26 @@ def get_trackinginfo(trackng_num):
     }
     df = pd.DataFrame(Data)
     print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    return df
 
 
-tracking_num ='CY139490872US'
-get_trackinginfo(tracking_num)
+#tracking_num ='CY139490872US'
+#get_trackinginfo(tracking_num)
+def scrape_list(tracking_nums):
+    #print(len(tracking_nums))
+    dfs = []
+    threads =[]
+    for i in tracking_nums[:4]:
+        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],)))
+    
+    for t in threads:
+        t.start()
+
+    for t in threads:
+        dfs.append(t.join())
+
+    country_frame = tocsv.country_csv()
+    for i in dfs:
+        country_frame.df = country_frame.df._append(i,ignore_index=True)
+    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    country_frame.write_to_csv('JAPAN')

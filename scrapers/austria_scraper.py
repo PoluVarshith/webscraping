@@ -4,17 +4,18 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 from deep_translator import GoogleTranslator
+import tocsv
 import pandas as pd
+import twrv
 """
 This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
-def get_trackinginfo(trackng_num):
+def get_trackinginfo(tracking_num):
     options = Options()
     #options.add_argument('--headless=new')
-
+    print(tracking_num)
     driver = webdriver.Chrome(
         options=options,
         # other properties...
@@ -50,14 +51,14 @@ def get_trackinginfo(trackng_num):
         except:
             loc = '-'
         #print(loc)
-        track_num.append(trackng_num)
+        track_num.append(tracking_num)
         EventDesc.append(desc)
         Dates.append(date)
         Times.append(time)
         Loc.append(loc)
-    print(len(Dates),len(Times),len(EventDesc))
+    #print(len(Dates),len(Times),len(EventDesc))
 
-    #drver.quit()
+    driver.quit()
     
     Data = {
     'Tracking Number' : track_num,
@@ -68,7 +69,25 @@ def get_trackinginfo(trackng_num):
     }
     df = pd.DataFrame(Data)
     print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    return df
 
+#tracking_num ='CJ499904901US'
+#get_trackinginfo(tracking_num)
+def scrape_list(tracking_nums):
+    #print(len(tracking_nums))
+    dfs = []
+    threads =[]
+    for i in tracking_nums[:4]:
+        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],)))
+    
+    for t in threads:
+        t.start()
 
-tracking_num ='CJ499904901US'
-get_trackinginfo(tracking_num)
+    for t in threads:
+        dfs.append(t.join())
+
+    country_frame = tocsv.country_csv()
+    for i in dfs:
+        country_frame.df = country_frame.df._append(i,ignore_index=True)
+    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    country_frame.write_to_csv('AUSTRIA')
