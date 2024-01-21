@@ -4,12 +4,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 from deep_translator import GoogleTranslator
+import tocsv
 import pandas as pd
+import twrv
 """
 This website can track more than one shipment
-It needs 30 sec to load fully,  So wai implicitly_wait for 30
+It needs 30 sec to load fully,  So implicitly_wait for 30
 """
 def get_trackinginfo(trackng_num):
     options = Options()

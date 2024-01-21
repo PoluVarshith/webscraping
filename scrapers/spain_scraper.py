@@ -95,4 +95,4 @@ def scrape_list(tracking_nums):
     for i in dfs:
         country_frame.df = country_frame.df._append(i,ignore_index=True)
     #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv()
+    country_frame.write_to_csv('SPAIN')
