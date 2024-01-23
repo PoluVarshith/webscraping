@@ -14,7 +14,7 @@ The site itself has a button to change french into english
 COUNTRY = 'JAPAN'
 def get_trackinginfo(tracking_num):
     options = Options()
-    #options.add_argument('--headless=new')
+    options.add_argument('--headless=new')
     print(tracking_num)
     driver = webdriver.Chrome(
         options=options,
