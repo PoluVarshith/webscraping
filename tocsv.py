@@ -1,5 +1,20 @@
 import pandas as pd
 from datetime import datetime
+
+def emtpy_frame():
+    #to define output file format
+    Data = {
+        'Tracking Number' : [],
+        'EventDesc' : [],
+        'EventDate' : [],
+        'EventTime' : [],
+        'EventLocation' : []
+        }
+    
+    df = pd.DataFrame(Data)
+    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    return df
+
 class country_frame:
     def __init__(self,country):
         self.country = country
