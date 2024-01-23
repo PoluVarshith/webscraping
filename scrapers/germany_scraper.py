@@ -1,4 +1,5 @@
 import urllib.request, json 
+from urllib.request import urlopen
 import tocsv
 import pandas as pd
 import twrv
@@ -10,9 +11,11 @@ It needs 30 sec to load fully,  So implicitly_wait for 30
 COUNTRY = 'GERMANY'
 def get_trackinginfo(tracking_num):
     tracking_num ='LV770224450US'
-    try:
-        url =  urllib.request.urlopen("https://www.deutschepost.de/int-verfolgen/data/search?piececode=" +
-                                       str(tracking_num) +  "&inputSearch=true&language=en") 
+    if True:
+        print('hello')
+        url =  urlopen("https://www.deutschepost.de/int-verfolgen/data/search?piececode=LV770291794US&inputSearch=true&language=en") 
+        print('hello')
+        print(url)
         data = json.load(url)
         print((data))
         events  = data['shipment'][0]['events']
@@ -40,7 +43,7 @@ def get_trackinginfo(tracking_num):
         }
         df = pd.DataFrame(Data)
         return df
-    except:
+    else:
         print("can't fetch data")
         return tocsv.emtpy_frame()
 
@@ -49,7 +52,7 @@ def get_trackinginfo(tracking_num):
 def scrape_list(tracking_nums):
     #print(len(tracking_nums))
     dfs = []
-    for i in tracking_nums[:4]:
+    for i in tracking_nums[:1]:
         dfs.append(get_trackinginfo(i[0]))
 
     country_frame = tocsv.country_frame(COUNTRY)
