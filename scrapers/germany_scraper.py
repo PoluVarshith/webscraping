@@ -79,7 +79,7 @@ def split_list(lst, chunk_size):
 def scrape_list(tracking_nums):
     #print(len(tracking_nums))
     dfs = []
-    chunk_size = 5
+    chunk_size = 8
     batches = split_list(tracking_nums, chunk_size)
     for batch in batches:
         threads =[]
