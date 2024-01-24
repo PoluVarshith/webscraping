@@ -5,6 +5,7 @@ def emtpy_frame():
     #to define output file format
     Data = {
         'Tracking Number' : [],
+        'EventCode' : [],
         'EventDesc' : [],
         'EventDate' : [],
         'EventTime' : [],
@@ -18,14 +19,7 @@ def emtpy_frame():
 class country_frame:
     def __init__(self,country):
         self.country = country
-        Data = {
-        'Tracking Number' : [],
-        'EventDesc' : [],
-        'EventDate' : [],
-        'EventTime' : [],
-        'EventLocation' : []
-        }
-        self.df = pd.DataFrame(Data)
+        self.df = emtpy_frame()
         #print(self.df)
     
     def write_to_csv(self):
