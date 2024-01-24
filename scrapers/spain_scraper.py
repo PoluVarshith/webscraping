@@ -18,6 +18,7 @@ def get_trackinginfo(tracking_num):
         events  = data['shipment'][0]['events']
         #print(len(events))
         Track_nums = []
+        Codes = []
         Dates = []
         Times = []
         Descs = []
@@ -25,6 +26,7 @@ def get_trackinginfo(tracking_num):
         for i in events:
             if i['extendedText'] not in  ["",'null']:
                 Track_nums.append(tracking_num)
+                Codes.append('')
                 Descs.append(i['extendedText'])
                 Dates.append(i['eventDate'])
                 Times.append(i['eventTime'])
@@ -33,6 +35,7 @@ def get_trackinginfo(tracking_num):
 
         Data = {
         'Tracking Number' : Track_nums,
+        'EventCode' : Codes,
         'EventDesc' : Descs,
         'EventDate' : Dates,
         'EventTime' : Times,
