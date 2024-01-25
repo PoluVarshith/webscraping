@@ -6,11 +6,11 @@ import pandas as pd
 def execute_sf_query(sql_stmt):
     database = "DATACLOUD_TEST"
     schema = "RAW"
-    warehouse = "DATACLOUD_TEST_WH"
+    warehouse = "DATACLOUD_COMPUTE_WH"
     snowflakeaccount = "https://xf56565.west-us-2.azure.snowflakecomputing.com/"
     snowflake_account = "xf56565.west-us-2.azure"
-    user = "SAETLDEV"
-    password = "KUZKtGuyw7vEmg7"
+    user = "vpolu"
+    password = "k!ndRock64"
     #
     sf_engine = create_engine(URL(account=snowflake_account,
                                 user=user,
@@ -23,6 +23,12 @@ def execute_sf_query(sql_stmt):
     result = sf_connection.execute(sql_stmt).fetchall()
     sf_connection.close()
     return result
+def get_config_table_data():
+    schema_quer = """DESCRIBE TABLE DATACLOUD_TEST.REFERENCE.WEB_SCRAPING_CONFIG_TABLE;"""
+    schema = execute_sf_query(schema_quer)
+    data_query  = """SELECT * FROM DATACLOUD_TEST.REFERENCE.WEB_SCRAPING_CONFIG_TABLE;;"""
+    table = execute_sf_query(data_query)
+    print(schema)#,table)
 
 def get_trackingnums_query(country):
     #sql_quer  = """SELECT COUNT(*) FROM DATACLOUD_TEST.REFERENCE.WEB_SCRAPING_CONFIG_TABLE;;"""
@@ -41,3 +47,5 @@ def get_tracknums(trackingnums_query):
     sf_result = execute_sf_query(trackingnums_query)
     print(sf_result)
     return sf_result
+
+#get_config_table_data()
