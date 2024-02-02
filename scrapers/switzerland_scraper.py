@@ -9,43 +9,37 @@ import tocsv
 import pandas as pd
 import twrv
 """
-The site itself has a button to change french into english
 """
-COUNTRY = 'JAPAN'
+COUNTRY = 'SWITZERLAND'
 def get_trackinginfo(tracking_num):
+    tracking_num = 'CY140082734US'
     options = Options()
-    options.add_argument('--headless=new')
+    #options.add_argument('--headless=new')
     print(tracking_num)
     driver = webdriver.Chrome(
         options=options,
         # other properties...
     )
-    driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en')
+    driver.get('https://service.post.ch/ekp-web/ui/entry/search/' + str(tracking_num))
     #driver.maximize_window()
-    driver.implicitly_wait(50)
+    driver.implicitly_wait(100)
 
-    Table = driver.find_elements(By.CLASS_NAME,'tableType01.txt_c.m_b5')[1]
-    #print((Table))
-    #table = Table.find_elements(By.XPATH,'./*')[1]
-    body = Table.find_elements(By.XPATH,'./*')[0]
-    CourseEntries = body.find_elements(By.XPATH,'./*')
-    #print(len(CourseEntries))
+    Table = driver.find_elements(By.CLASS_NAME,'container-fluid.tab-content.ml-1')[0]
+    date =  Table.find_elements(By.CLASS_NAME,'sub-menu-item')[0].text
+    print('date',date)
+    #print(len(Table))
+    table = Table.find_elements(By.CLASS_NAME,'col-12')
+    print('table',len(table))
+    #print(len(Events))
     EventDate = []
     EventDesc = []
     track_num = []
     Dates = []
     Times = []
     Loc = []
-    for i in range(2,len(CourseEntries),2):
-        date_time = CourseEntries[i].find_element(By.CLASS_NAME,'w_120').get_attribute('innerText')
-        try:
-            date,time = date_time.split(" ")
-        except:
-            date = date_time
-            time = " "
-        #print(date,time)
-        desc = CourseEntries[i].find_element(By.CLASS_NAME,'w_150').get_attribute('innerText')
-        #print(desc)
+    for t in table:
+        desc = t.find_element(By.CLASS_NAME,'col-1.time').get_attribute('innerText')
+        print(desc)
         locs = CourseEntries[i].find_elements(By.CLASS_NAME,'w_105')
         loc0 = locs[0].get_attribute('innerText')
         loc2 = locs[1].get_attribute('innerText')
@@ -71,13 +65,13 @@ def get_trackinginfo(tracking_num):
     print(df[['EventDesc','EventDate','EventTime','EventLocation']])
     return df
 
-
+#tracking_num = 'CY140082734US'
 #get_trackinginfo(tracking_num)
 def scrape_list(tracking_nums):
     #print(len(tracking_nums))
     dfs = []
     threads =[]
-    for i in tracking_nums[:4]:
+    for i in tracking_nums[:1]:
         threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],)))
     
     for t in threads:

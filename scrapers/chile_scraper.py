@@ -11,21 +11,22 @@ import twrv
 """
 The site itself has a button to change french into english
 """
-COUNTRY = 'JAPAN'
+COUNTRY = 'CHILE'
 def get_trackinginfo(tracking_num):
+    tracking_num = 'CJ300557446US'
     options = Options()
-    options.add_argument('--headless=new')
+    #options.add_argument('--headless=new')
     print(tracking_num)
     driver = webdriver.Chrome(
         options=options,
         # other properties...
     )
-    driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en')
+    driver.get('https://parcelsapp.com/en/tracking/' + str(tracking_num) )
     #driver.maximize_window()
     driver.implicitly_wait(50)
 
-    Table = driver.find_elements(By.CLASS_NAME,'tableType01.txt_c.m_b5')[1]
-    #print((Table))
+    Table = driver.find_elements(By.CLASS_NAME,'list-unstyled events')
+    print(len(Table),'hello')
     #table = Table.find_elements(By.XPATH,'./*')[1]
     body = Table.find_elements(By.XPATH,'./*')[0]
     CourseEntries = body.find_elements(By.XPATH,'./*')
@@ -72,12 +73,13 @@ def get_trackinginfo(tracking_num):
     return df
 
 
+#tracking_num ='CY139490872US'
 #get_trackinginfo(tracking_num)
 def scrape_list(tracking_nums):
     #print(len(tracking_nums))
     dfs = []
     threads =[]
-    for i in tracking_nums[:4]:
+    for i in tracking_nums[:1]:
         threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],)))
     
     for t in threads:
