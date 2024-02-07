@@ -26,6 +26,7 @@ class country_frame:
         #print(self.df[['EventDesc','EventDate','EventTime','EventLocation']])
         current_datetime = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
         filename = "..\\" + str(self.country) + " " + str(current_datetime)  + '.csv'
+        #filename = "\\\sauw1slprdsftp.file.core.windows.net\cornerstonesftp\FTPData\XPO\EPG\Prod\Tracking\Vendor\CommonVendor\sourcepath\\" + str(self.country) + " " + str(current_datetime)  + '.csv'        
         self.df.to_csv(filename, sep=',', index=False, encoding='utf-8')
 
     

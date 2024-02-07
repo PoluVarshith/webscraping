@@ -15,20 +15,24 @@ COUNTRY = 'JAPAN'
 def get_trackinginfo(tracking_num):
     options = Options()
     options.add_argument('--headless=new')
-    print(tracking_num)
-    driver = webdriver.Chrome(
-        options=options,
-        # other properties...
-    )
-    driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en')
-    #driver.maximize_window()
-    driver.implicitly_wait(50)
+    try:
+        driver = webdriver.Chrome(
+            options=options,
+            # other properties...
+        )
+        driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en')
+        #driver.maximize_window()
+        driver.implicitly_wait(50)
 
-    Table = driver.find_elements(By.CLASS_NAME,'tableType01.txt_c.m_b5')[1]
-    #print((Table))
-    #table = Table.find_elements(By.XPATH,'./*')[1]
-    body = Table.find_elements(By.XPATH,'./*')[0]
-    CourseEntries = body.find_elements(By.XPATH,'./*')
+        Table = driver.find_elements(By.CLASS_NAME,'tableType01.txt_c.m_b5')[1]
+        #print((Table))
+        #table = Table.find_elements(By.XPATH,'./*')[1]
+        body = Table.find_elements(By.XPATH,'./*')[0]
+        CourseEntries = body.find_elements(By.XPATH,'./*')
+    except:
+        print("can't fetch data")
+        return tocsv.emtpy_frame()
+    
     #print(len(CourseEntries))
     EventDate = []
     EventDesc = []
@@ -68,7 +72,7 @@ def get_trackinginfo(tracking_num):
     'EventLocation' : Loc
     }
     df = pd.DataFrame(Data)
-    print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
     return df
 
 
@@ -77,7 +81,7 @@ def scrape_list(tracking_nums):
     #print(len(tracking_nums))
     dfs = []
     threads =[]
-    for i in tracking_nums[:4]:
+    for i in tracking_nums:
         threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],)))
     
     for t in threads:

@@ -24,16 +24,15 @@ def execute_sf_query(sql_stmt):
     sf_connection.close()
     return result
 def get_config_table_data():
-    schema_quer = """DESCRIBE TABLE DATACLOUD_TEST.REFERENCE.WEB_SCRAPING_CONFIG_TABLE;"""
-    schema = execute_sf_query(schema_quer)
+    #schema_quer = """DESCRIBE TABLE DATACLOUD_TEST.REFERENCE.WEB_SCRAPING_CONFIG_TABLE;"""
+    #schema = execute_sf_query(schema_quer)
+    #print(schema)
     data_query  = """SELECT * FROM DATACLOUD_TEST.REFERENCE.WEB_SCRAPING_CONFIG_TABLE;;"""
     table = execute_sf_query(data_query)
-    print(schema)#,table)
+    #print(table)
+    return table
 
 def get_trackingnums_query(country):
-    #sql_quer  = """SELECT COUNT(*) FROM DATACLOUD_TEST.REFERENCE.WEB_SCRAPING_CONFIG_TABLE;;"""
-    #country_query = execute_sf_query(sql_quer)
-    #print(country_query)
     trackingnums_query = """SELECT TRACKINGNO FROM 
     (SELECT P.TRACKINGNO,MAX(E.EVENT_DATETIME) AS MAX_EVENT_DATETIME FROM 
     (SELECT * FROM DATACLOUD.EDW.PARCEL WHERE DELIVERED_DATE IS NULL AND DATE_PROCESSED BETWEEN DATEADD(DAY,-30,CURRENT_TIMESTAMP) AND DATEADD(DAY,-7,CURRENT_TIMESTAMP)) P 
@@ -45,7 +44,7 @@ def get_trackingnums_query(country):
 
 def get_tracknums(trackingnums_query):
     sf_result = execute_sf_query(trackingnums_query)
-    print(sf_result)
+    #print(sf_result)
     return sf_result
 
 #get_config_table_data()
