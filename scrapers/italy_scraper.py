@@ -13,7 +13,7 @@ This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
 COUNTRY = 'ITALY'
-def get_trackinginfo(tracking_num):
+def get_trackinginfo(tracking_num,scraping_url):
     options = Options()
     #options.add_argument('--headless=new')
 
@@ -21,13 +21,15 @@ def get_trackinginfo(tracking_num):
         options=options,
         # other properties...
     )
-    driver.get('https://www.poste.it/')
+    url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
+    driver.get(url)
+    #driver.get('https://www.poste.it/cerca/index.html#/risultati-spedizioni/LV770247402US')
     #driver.maximize_window()
     driver.implicitly_wait(50)
-    track = driver.find_element(By.CLASS_NAME,'form-control')
-    track.send_keys(tracking_num)
-    track.send_keys(Keys.RETURN)
-    driver.implicitly_wait(30)
+    #track = driver.find_element(By.CLASS_NAME,'form-control')
+    #track.send_keys(tracking_num)
+    #track.send_keys(Keys.RETURN)
+    #driver.implicitly_wait(30)
 
     Table = driver.find_element(By.CLASS_NAME,'table.table-hover.spacer-xs-top-10.spacer-xs-bottom-0')
     table = Table.find_elements(By.XPATH,'./*')[1]
@@ -74,14 +76,14 @@ def get_trackinginfo(tracking_num):
 #tracking_num ='LV770247402US'
 #get_trackinginfo(tracking_num)
 
-def scrape_list(tracking_nums):
+def scrape_list(tracking_nums,scraping_url,output_name):
     #print(len(tracking_nums))
     dfs = []
     for i in tracking_nums[:4]:
-        dfs.append(get_trackinginfo(i[0]))
+        dfs.append(get_trackinginfo(i[0],scraping_url))
 
     country_frame = tocsv.country_frame(COUNTRY)
     for i in dfs:
         country_frame.df = country_frame.df._append(i,ignore_index=True)
     #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv()
+    country_frame.write_to_csv(output_path)

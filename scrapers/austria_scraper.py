@@ -13,7 +13,7 @@ This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
 COUNTRY = 'AUSTRIA'
-def get_trackinginfo(tracking_num):
+def get_trackinginfo(tracking_num,scraping_url):
     options = Options()
     #options.add_argument('--headless=new')
     print(tracking_num)
@@ -21,13 +21,15 @@ def get_trackinginfo(tracking_num):
         options=options,
         # other properties...
     )
-    driver.get('https://www.post.at/s/sendungssuche')
+    url = scraping_url.replace("#TRACKING_NUM#",str(tracking_num))
+    driver.get(url)
+    #driver.get('https://www.post.at/s/sendungsdetails?snr=CJ499904901US')
     #driver.maximize_window()
     driver.implicitly_wait(50)
-    track = driver.find_element(By.NAME,'tracking_search')
-    track.send_keys(tracking_num)
-    track.send_keys(Keys.RETURN)
-    driver.implicitly_wait(20)
+    #track = driver.find_element(By.NAME,'tracking_search')
+    #rack.send_keys(tracking_num)
+    #track.send_keys(Keys.RETURN)
+    #driver.implicitly_wait(20)
 
     Container = driver.find_element(By.CLASS_NAME,'tracking__history-list')
     CourseEntries = Container.find_elements(By.XPATH,'./*')
@@ -74,12 +76,12 @@ def get_trackinginfo(tracking_num):
 
 #tracking_num ='CJ499904901US'
 #get_trackinginfo(tracking_num)
-def scrape_list(tracking_nums):
+def scrape_list(tracking_nums,scraping_url,output_path):
     #print(len(tracking_nums))
     dfs = []
     threads =[]
     for i in tracking_nums[:4]:
-        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],)))
+        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],scraping_url,)))
     
     for t in threads:
         t.start()
@@ -91,4 +93,4 @@ def scrape_list(tracking_nums):
     for i in dfs:
         country_frame.df = country_frame.df._append(i,ignore_index=True)
     #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv()
+    country_frame.write_to_csv(output_path)

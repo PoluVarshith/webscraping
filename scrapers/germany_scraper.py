@@ -13,10 +13,11 @@ from selenium.webdriver.support import expected_conditions as EC
 This website can track more than one shipment
 """
 COUNTRY = 'GERMANY'
-def get_trackinginfo(tracking_num):
+def get_trackinginfo(tracking_num,scraping_url):
     #tracking_num ='CY139955908US'
     try:
         print(tracking_num)
+        #url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         url = ('https://www.deutschepost.de/int-verfolgen/data/search?piececode=' +
                     str(tracking_num) + '&inputSearch=true&language=en')
         options = FirefoxOptions()
@@ -76,7 +77,7 @@ def split_list(lst, chunk_size):
         chunks[i // chunk_size].append(item)
     return chunks
 
-def scrape_list(tracking_nums):
+def scrape_list(tracking_nums,scraping_url,output_path):
     #print(len(tracking_nums))
     dfs = []
     chunk_size = 8
@@ -84,7 +85,7 @@ def scrape_list(tracking_nums):
     for batch in batches:
         threads =[]
         for i in batch:
-            threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],)))
+            threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],scrape_list,)))
         
         for t in threads:
             t.start()
@@ -97,4 +98,4 @@ def scrape_list(tracking_nums):
     for i in dfs:
         country_frame.df = country_frame.df._append(i,ignore_index=True)
     #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv()
+    country_frame.write_to_csv(output_path)
