@@ -1,6 +1,7 @@
 import scraper
 import snowflake_queries
 import twrv
+import logging
 
 def main():
     #countries = []
