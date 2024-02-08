@@ -1,13 +1,13 @@
 import snowflake_queries
 import time
 
-def scrape(country,trackingnums_query):
+def scrape(country,trackingnums_query,scraping_url,output_path):
     tracking_nums = snowflake_queries.get_tracknums(trackingnums_query)
     print(country,'Total Tracking Numbers :',len(tracking_nums))
     print(tracking_nums)
     scraper_name = country.lower() + '_scraper'
     scrape_country = getattr(__import__('scrapers', fromlist=[scraper_name]),scraper_name)
-    scrape_country.scrape_list(tracking_nums)
+    scrape_country.scrape_list(tracking_nums,scraping_url,output_path)
 
 def scrape_test(country):
     print('test scraper')

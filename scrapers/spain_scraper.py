@@ -8,11 +8,15 @@ It needs 30 sec to load fully,  So wait implicitly_wait for 30
 It only give Delivary time and data no location
 """
 COUNTRY  = 'SPAIN'
-def get_trackinginfo(tracking_num):
+def get_trackinginfo(tracking_num,scraping_url):
     #tracking_num = 'CY139861975US'
     try:
-        url =  urllib.request.urlopen("https://api1.correos.es/digital-services/searchengines/api/v1/?text=" 
-                                    + str(tracking_num) + "&language=EN&searchType=envio") 
+        scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
+        url = urllib.request.urlopen(scraping_url)
+        
+        #url =  urllib.request.urlopen("https://api1.correos.es/digital-services/searchengines/api/v1/?text=" 
+        #                            + str(tracking_num) + "&language=EN&searchType=envio") 
+        scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         data = json.load(url)
         #print(type(data))
         events  = data['shipment'][0]['events']
@@ -49,12 +53,12 @@ def get_trackinginfo(tracking_num):
 
 #get_trackinginfo(tracking_num)
 
-def scrape_list(tracking_nums):
+def scrape_list(tracking_nums,scraping_url,output_path):
     #print(len(tracking_nums))
     dfs = []
     threads =[]
     for i in tracking_nums:
-        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],)))
+        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],scraping_url,)))
     
     for t in threads:
         t.start()
@@ -66,4 +70,4 @@ def scrape_list(tracking_nums):
     for i in dfs:
         country_frame.df = country_frame.df._append(i,ignore_index=True)
     #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv()
+    country_frame.write_to_csv(output_path)

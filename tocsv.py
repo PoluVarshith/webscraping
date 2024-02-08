@@ -22,11 +22,12 @@ class country_frame:
         self.df = emtpy_frame()
         #print(self.df)
     
-    def write_to_csv(self):
+    def write_to_csv(self,output_path):
         #print(self.df[['EventDesc','EventDate','EventTime','EventLocation']])
         current_datetime = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
-        filename = "..\\" + str(self.country) + " " + str(current_datetime)  + '.csv'
-        #filename = "\\\sauw1slprdsftp.file.core.windows.net\cornerstonesftp\FTPData\XPO\EPG\Prod\Tracking\Vendor\CommonVendor\sourcepath\\" + str(self.country) + " " + str(current_datetime)  + '.csv'        
-        self.df.to_csv(filename, sep=',', index=False, encoding='utf-8')
+        output_name = "..\\" + str(self.country) + " " + str(current_datetime)  + '.csv'
+        #output_name = output_path + str(self.country) + " " + str(current_datetime)  + '.csv'        
+        #output_name = "\\\sauw1slprdsftp.file.core.windows.net\cornerstonesftp\FTPData\XPO\EPG\Prod\Tracking\Vendor\CommonVendor\sourcepath\\" + str(self.country) + " " + str(current_datetime)  + '.csv'        
+        self.df.to_csv(output_name, sep=',', index=False, encoding='utf-8')
 
     

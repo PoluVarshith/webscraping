@@ -5,7 +5,7 @@ import pandas as pd
 
 def execute_sf_query(sql_stmt):
     database = "DATACLOUD_TEST"
-    schema = "RAW"
+    schema = "REFERENCE"
     warehouse = "DATACLOUD_COMPUTE_WH"
     snowflakeaccount = "https://xf56565.west-us-2.azure.snowflakecomputing.com/"
     snowflake_account = "xf56565.west-us-2.azure"
@@ -23,11 +23,12 @@ def execute_sf_query(sql_stmt):
     result = sf_connection.execute(sql_stmt).fetchall()
     sf_connection.close()
     return result
+
 def get_config_table_data():
     #schema_quer = """DESCRIBE TABLE DATACLOUD_TEST.REFERENCE.WEB_SCRAPING_CONFIG_TABLE;"""
     #schema = execute_sf_query(schema_quer)
     #print(schema)
-    data_query  = """SELECT * FROM DATACLOUD_TEST.REFERENCE.WEB_SCRAPING_CONFIG_TABLE;;"""
+    data_query  = """SELECT COUNTRY_NAME,REPLACE(REPLACE(REPLACE(SELECT_SQL,'#COUNTRY_NAME#',COUNTRY_NAME),'#MIN_SELECTED_DAYS#',MIN_SELECTED_DAYS),'#MAX_SELECTED_DAYS#',MAX_SELECTED_DAYS) AS SEL_SQL FROM REFERENCE.WEB_SCRAPING_CONFIG_TABLE WHERE IS_ACTIVE=1;"""
     table = execute_sf_query(data_query)
     #print(table)
     return table
