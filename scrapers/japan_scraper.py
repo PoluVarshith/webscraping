@@ -92,7 +92,7 @@ def scrape_list(tracking_nums,scraping_url,output_path,logger,log_dir_path):
     #print(len(tracking_nums))
     log_country_dir_path = logfuns.make_logging_country_dir(COUNTRY,log_dir_path)
     country_logger = logfuns.set_logger(log_dir_path,country=COUNTRY)
-
+    country_logger.info('List of Tracking Numbers ' + str(tracking_nums))
     dfs = []
     threads =[]
     for i in tracking_nums[:3]:

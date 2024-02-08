@@ -11,7 +11,6 @@ It only give Delivary time and data no location
 COUNTRY  = 'SPAIN'
 def get_trackinginfo(tracking_num,scraping_url,country_logger,log_country_dir_path=None):
     #tracking_num = 'CY139861975US'
-    #logger = country_logger
     country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
@@ -20,10 +19,8 @@ def get_trackinginfo(tracking_num,scraping_url,country_logger,log_country_dir_pa
     try:
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         url = urllib.request.urlopen(scraping_url)
-
         #url =  urllib.request.urlopen("https://api1.correos.es/digital-services/searchengines/api/v1/?text=" 
         #                            + str(tracking_num) + "&language=EN&searchType=envio") 
-        scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         data = json.load(url)
         #print(type(data))
         events  = data['shipment'][0]['events']
@@ -66,7 +63,7 @@ def scrape_list(tracking_nums,scraping_url,output_path,logger,log_dir_path):
     #print(len(tracking_nums))
     log_country_dir_path = logfuns.make_logging_country_dir(COUNTRY,log_dir_path)
     country_logger = logfuns.set_logger(log_dir_path,country=COUNTRY)
-
+    country_logger.info('List of Tracking Numbers ' + str(tracking_nums))
     dfs = []
     threads =[]
     for i in tracking_nums:

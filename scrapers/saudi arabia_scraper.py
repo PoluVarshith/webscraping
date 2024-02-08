@@ -2,17 +2,25 @@ import urllib.request, json
 import tocsv
 import pandas as pd
 import twrv
+import logfuns
 """
 Spain website can only track one item
 It needs 30 sec to load fully,  So wait implicitly_wait for 30
 It only give Delivary time and data no location
 """
 COUNTRY  = 'SAUDI ARABIA'
-def get_trackinginfo(tracking_num):
-    tracking_num = 'CY363813004US'
+def get_trackinginfo(tracking_num,scraping_url,country_logger,log_country_dir_path):
+    #tracking_num = 'CY363813004US'
+    country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
+    logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
+    logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
-        url =  urllib.request.urlopen("https://splonline.com.sa/umbraco/api/tools/trackshipment?language=en&shipmentCode="
-                                    + str(tracking_num)) 
+        scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
+        url = urllib.request.urlopen(scraping_url)
+        #url =  urllib.request.urlopen("https://splonline.com.sa/umbraco/api/tools/trackshipment?language=en&shipmentCode="
+        #                            + str(tracking_num)) 
         data = json.load(url)
         #print(type(data))
         events  = data[0]['TrackingInfoItemList']
@@ -44,19 +52,24 @@ def get_trackinginfo(tracking_num):
         'EventLocation' : Locs
         }
         df = pd.DataFrame(Data)
+        logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
+        country_logger.info(str(tracking_num) +'scraping successful')
         return df
     except:
-        print("can't fetch data")
+        country_logger.info(str(tracking_num),"scraping failed")
         return tocsv.emtpy_frame()
 
 #get_trackinginfo(tracking_num)
 
-def scrape_list(tracking_nums):
+def scrape_list(tracking_nums,scraping_url,output_path,logger,log_dir_path):
     #print(len(tracking_nums))
+    log_country_dir_path = logfuns.make_logging_country_dir(COUNTRY,log_dir_path)
+    country_logger = logfuns.set_logger(log_dir_path,country=COUNTRY)
+    country_logger.info('List of Tracking Numbers ' + str(tracking_nums))
     dfs = []
     threads =[]
     for i in tracking_nums[:10]:
-        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],)))
+        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],scraping_url,country_logger,log_country_dir_path,)))
     
     for t in threads:
         t.start()
@@ -68,4 +81,4 @@ def scrape_list(tracking_nums):
     for i in dfs:
         country_frame.df = country_frame.df._append(i,ignore_index=True)
     #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv()
+    country_frame.write_to_csv(output_path)
