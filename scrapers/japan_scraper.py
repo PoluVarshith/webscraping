@@ -12,7 +12,7 @@ import twrv
 The site itself has a button to change french into english
 """
 COUNTRY = 'JAPAN'
-def get_trackinginfo(tracking_num):
+def get_trackinginfo(tracking_num,scraping_url):
     options = Options()
     options.add_argument('--headless=new')
     try:
@@ -20,7 +20,11 @@ def get_trackinginfo(tracking_num):
             options=options,
             # other properties...
         )
-        driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en')
+        print(scraping_url)
+        scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
+        #driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en')
+        print(scraping_url)
+        driver.get(scraping_url)
         #driver.maximize_window()
         driver.implicitly_wait(50)
 
@@ -77,12 +81,12 @@ def get_trackinginfo(tracking_num):
 
 
 #get_trackinginfo(tracking_num)
-def scrape_list(tracking_nums):
+def scrape_list(tracking_nums,scraping_url,output_path):
     #print(len(tracking_nums))
     dfs = []
     threads =[]
-    for i in tracking_nums:
-        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],)))
+    for i in tracking_nums[:3]:
+        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],scraping_url,)))
     
     for t in threads:
         t.start()
@@ -94,4 +98,4 @@ def scrape_list(tracking_nums):
     for i in dfs:
         country_frame.df = country_frame.df._append(i,ignore_index=True)
     #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv()
+    country_frame.write_to_csv(output_path)
