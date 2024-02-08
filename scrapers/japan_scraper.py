@@ -40,7 +40,7 @@ def get_trackinginfo(tracking_num,scraping_url,country_logger,log_country_dir_pa
         body = Table.find_elements(By.XPATH,'./*')[0]
         CourseEntries = body.find_elements(By.XPATH,'./*')
     except:
-        country_logger.info(str(tracking_num),"scraping failed")
+        country_logger.info(str(tracking_num)+ " scraping failed")
         return tocsv.emtpy_frame()
     
     #print(len(CourseEntries))
@@ -83,7 +83,7 @@ def get_trackinginfo(tracking_num,scraping_url,country_logger,log_country_dir_pa
     }
     df = pd.DataFrame(Data)
     logger.info(str(df[['EventDesc','EventDate','EventTime','EventLocation']]))
-    country_logger.info(str(tracking_num) +'scraping successful')
+    country_logger.info(str(tracking_num) +' scraping successful')
     return df
 
 
@@ -92,6 +92,7 @@ def scrape_list(tracking_nums,scraping_url,output_path,logger,log_dir_path):
     #print(len(tracking_nums))
     log_country_dir_path = logfuns.make_logging_country_dir(COUNTRY,log_dir_path)
     country_logger = logfuns.set_logger(log_dir_path,country=COUNTRY)
+    country_logger.info("Total Tracking Numbers :" + str(len(tracking_nums)))
     country_logger.info('List of Tracking Numbers ' + str(tracking_nums))
     dfs = []
     threads =[]

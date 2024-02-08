@@ -7,7 +7,7 @@ def get_date_time():
     Date = today.strftime('%d-%m-%Y')
     now = datetime.now()
     Time = now.strftime("%H_%M_%S")
-    START_TIME = Date + '@' + Time
+    START_TIME = Date + 'T' + Time
     #print(START_TIME)
     return START_TIME
 
@@ -15,7 +15,7 @@ def make_logging_dir():
     START_TIME = get_date_time()
     cwd = (os.getcwd())
     path = os.path.join(cwd, 'logs')
-    path = os.path.join(path,str(START_TIME))
+    path = os.path.join(path,'SESSION_'+str(START_TIME) + '_log')
     #path = joinpath('./logs',str(START_TIME))
     #print(path)
     os.mkdir(path)
@@ -24,18 +24,18 @@ def make_logging_dir():
 def make_logging_filepath(path,country=None,tracking_num=None):
     START_TIME = get_date_time()
     if tracking_num == None and country == None:
-        path = os.path.join(path,str(START_TIME)+'.txt')
+        path = os.path.join(path,'SESSION_'+str(START_TIME)+ '_log' +'.txt')
         return path
     elif country != None:
-        path = os.path.join(path,str(country) + '_' +str(START_TIME)+'.txt')
+        path = os.path.join(path,str(country) + '_' +str(START_TIME) + '_log' +'.txt')
         return path
     else:
-        path = os.path.join(path,str(tracking_num)+'.txt')
+        path = os.path.join(path,str(tracking_num) + '_log' +'.txt')
         return path
 
 
 def make_logging_country_dir(COUNTRY,log_dir_path):
-    path = os.path.join(log_dir_path,str(COUNTRY) + '_' + str(get_date_time()))
+    path = os.path.join(log_dir_path,str(COUNTRY) + '_' + str(get_date_time()) + '_log')
     #print('here',path)
     os.mkdir(path)
     return path
