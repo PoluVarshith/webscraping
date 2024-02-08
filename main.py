@@ -23,8 +23,6 @@ def main():
         country = c[0]
         query = c[1]
         if country == 'JAPAN':
-            continue
-        if country == 'JAPAN':
             scraping_url = 'https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=#TRACKING_NUM#&searchKind=S002&locale=en'
         else:
             scraping_url = "https://api1.correos.es/digital-services/searchengines/api/v1/?text=#TRACKING_NUM#&language=EN&searchType=envio"

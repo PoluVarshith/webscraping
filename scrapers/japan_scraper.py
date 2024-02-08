@@ -8,19 +8,25 @@ from deep_translator import GoogleTranslator
 import tocsv
 import pandas as pd
 import twrv
+import logfuns
 """
 The site itself has a button to change french into english
 """
 COUNTRY = 'JAPAN'
-def get_trackinginfo(tracking_num,scraping_url):
+def get_trackinginfo(tracking_num,scraping_url,country_logger,log_country_dir_path=None):
     options = Options()
     options.add_argument('--headless=new')
+    country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
+    logger = logfuns.set_logger(log_country_dir_path,tracking_num)
+    logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
         driver = webdriver.Chrome(
             options=options,
             # other properties...
         )
-        print(scraping_url)
+        #print(scraping_url)
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         #driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en')
         print(scraping_url)
@@ -34,7 +40,7 @@ def get_trackinginfo(tracking_num,scraping_url):
         body = Table.find_elements(By.XPATH,'./*')[0]
         CourseEntries = body.find_elements(By.XPATH,'./*')
     except:
-        print("can't fetch data")
+        country_logger.info(str(tracking_num),"scraping failed")
         return tocsv.emtpy_frame()
     
     #print(len(CourseEntries))
@@ -76,17 +82,21 @@ def get_trackinginfo(tracking_num,scraping_url):
     'EventLocation' : Loc
     }
     df = pd.DataFrame(Data)
-    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
+    logger.info(str(df[['EventDesc','EventDate','EventTime','EventLocation']]))
+    country_logger.info(str(tracking_num) +'scraping successful')
     return df
 
 
 #get_trackinginfo(tracking_num)
-def scrape_list(tracking_nums,scraping_url,output_path):
+def scrape_list(tracking_nums,scraping_url,output_path,logger,log_dir_path):
     #print(len(tracking_nums))
+    log_country_dir_path = logfuns.make_logging_country_dir(COUNTRY,log_dir_path)
+    country_logger = logfuns.set_logger(log_dir_path,country=COUNTRY)
+
     dfs = []
     threads =[]
     for i in tracking_nums[:3]:
-        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],scraping_url,)))
+        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],scraping_url,country_logger,log_country_dir_path,)))
     
     for t in threads:
         t.start()

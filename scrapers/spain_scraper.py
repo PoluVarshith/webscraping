@@ -9,8 +9,14 @@ It needs 30 sec to load fully,  So wait implicitly_wait for 30
 It only give Delivary time and data no location
 """
 COUNTRY  = 'SPAIN'
-def get_trackinginfo(tracking_num,scraping_url,log_country_dir_path):
+def get_trackinginfo(tracking_num,scraping_url,country_logger,log_country_dir_path=None):
     #tracking_num = 'CY139861975US'
+    #logger = country_logger
+    country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
+    logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
+    logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         url = urllib.request.urlopen(scraping_url)
@@ -47,21 +53,24 @@ def get_trackinginfo(tracking_num,scraping_url,log_country_dir_path):
         'EventLocation' : Locs
         }
         df = pd.DataFrame(Data)
+        logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
+        country_logger.info(str(tracking_num) +'scraping successful')
         return df
     except:
-        print("can't fetch data")
+        country_logger.info(str(tracking_num),"scraping failed")
         return tocsv.emtpy_frame()
 
 #get_trackinginfo(tracking_num)
 
 def scrape_list(tracking_nums,scraping_url,output_path,logger,log_dir_path):
     #print(len(tracking_nums))
-    #print(COUNTRY,log_dir_path)
-    log_country_dir_path = logfuns.make_logging_country_dir(logger,COUNTRY,log_dir_path)
+    log_country_dir_path = logfuns.make_logging_country_dir(COUNTRY,log_dir_path)
+    country_logger = logfuns.set_logger(log_dir_path,country=COUNTRY)
+
     dfs = []
     threads =[]
     for i in tracking_nums:
-        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],scraping_url,log_country_dir_path,)))
+        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],scraping_url,country_logger,log_country_dir_path,)))
     
     for t in threads:
         t.start()
