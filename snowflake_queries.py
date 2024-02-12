@@ -3,9 +3,9 @@ from snowflake.sqlalchemy import URL
 from sqlalchemy import create_engine
 import pandas as pd
 
-def execute_sf_query(sql_stmt):
+def execute_sf_query(sql_stmt,schema='REFERENCE'):
     database = "DATACLOUD_TEST"
-    schema = "REFERENCE"
+    #schema = "REFERENCE"
     warehouse = "DATACLOUD_COMPUTE_WH"
     snowflakeaccount = "https://xf56565.west-us-2.azure.snowflakecomputing.com/"
     snowflake_account = "xf56565.west-us-2.azure"
@@ -28,7 +28,7 @@ def get_config_table_data():
     #schema_quer = """DESCRIBE TABLE DATACLOUD_TEST.REFERENCE.WEB_SCRAPING_CONFIG_TABLE;"""
     #schema = execute_sf_query(schema_quer)
     #print(schema)
-    data_query  = """SELECT COUNTRY_NAME,REPLACE(REPLACE(REPLACE(SELECT_SQL,'#COUNTRY_NAME#',COUNTRY_NAME),'#MIN_SELECTED_DAYS#',MIN_SELECTED_DAYS),'#MAX_SELECTED_DAYS#',MAX_SELECTED_DAYS) AS SEL_SQL,SCRAPING_URL,OUTPUT_PATH FROM REFERENCE.WEB_SCRAPING_CONFIG_TABLE WHERE IS_ACTIVE=1;"""
+    data_query  = """SELECT POSTAL_SITE_ID,COUNTRY_NAME,REPLACE(REPLACE(REPLACE(SELECT_SQL,'#COUNTRY_NAME#',COUNTRY_NAME),'#MIN_SELECTED_DAYS#',MIN_SELECTED_DAYS),'#MAX_SELECTED_DAYS#',MAX_SELECTED_DAYS) AS SEL_SQL,SCRAPING_URL,OUTPUT_PATH FROM REFERENCE.WEB_SCRAPING_CONFIG_TABLE WHERE IS_ACTIVE=1;"""
     table = execute_sf_query(data_query)
     #print(table)
     return table
@@ -48,4 +48,17 @@ def get_tracknums(trackingnums_query):
     #print(sf_result)
     return sf_result
 
+def insert_audit_info(audit_info,country_logger):
+    start_datetime = "to_timestamp('" + str(audit_info['START_DATETIME']) + "','DD-MM-YYYY HH24:MI:SS')"
+    end_datetime = "to_timestamp('" + str(audit_info['END_DATETIME']) + "','DD-MM-YYYY HH24:MI:SS')" 
+    #print(start_datetime,end_datetime)
+    values = str((audit_info['POSTAL_SITE_ID'],len(audit_info['ACTUAL_TRACKING_NOS']),len(audit_info['SCRAPING_TRACKING_NOS']),'start_datetime','end_datetime',audit_info['STATUS']))
+    values = values.replace("'start_datetime'",start_datetime)
+    values = values.replace("'end_datetime'",end_datetime)
+    #print(values)
+    insert_audit_info_query = """INSERT INTO DATACLOUD_TEST.ETL.WEB_SCRAPING_AUDIT (POSTAL_SITE_ID,
+ACTUAL_TRACKING_NOS,SCRAPING_TRACKING_NOS,START_DATETIME,END_DATETIME,STATUS)
+VALUES""" + values
+    country_logger.info('SQL Query for Audit Table insertion: '+insert_audit_info_query)
+    execute_sf_query(insert_audit_info_query,'ETL')
 #get_config_table_data()

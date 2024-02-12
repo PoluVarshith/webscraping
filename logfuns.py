@@ -11,6 +11,15 @@ def get_date_time():
     #print(START_TIME)
     return START_TIME
 
+def get_date_time_normal_format():
+    today = date.today()
+    Date = today.strftime('%d-%m-%Y')
+    now = datetime.now()
+    Time = now.strftime("%H:%M:%S")
+    START_TIME = Date + ' ' + Time
+    #print(START_TIME)
+    return START_TIME
+
 def make_logging_dir():
     START_TIME = get_date_time()
     cwd = (os.getcwd())
