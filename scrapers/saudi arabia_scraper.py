@@ -13,10 +13,10 @@ It only give Delivary time and data no location
 COUNTRY  = 'SAUDI ARABIA'
 def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path):
     #tracking_num = 'CY363813004US'
-    country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
-    logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))

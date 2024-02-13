@@ -8,81 +8,84 @@ from deep_translator import GoogleTranslator
 import tocsv
 import pandas as pd
 import twrv
+import logfuns
+import scraper
+import snowflake_queries
 """
 The site itself has a button to change french into english
 """
 COUNTRY = 'FRANCE'
-def get_trackinginfo(tracking_num,scraping_url):
-    options = Options()
-    #options.add_argument('--headless=new')
-    print(tracking_num)
-    driver = webdriver.Chrome(
-        options=options,
-        # other properties...
-    )
-    driver.get('https://www.laposte.fr/outils/track-a-parcel')
-    #driver.maximize_window()
-    driver.implicitly_wait(100)
-    track = driver.find_element(By.NAME,'code')
-    track.send_keys(tracking_num)
-    track.send_keys(Keys.RETURN)
-    driver.implicitly_wait(20)
+def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path):
+    #tracking_num = 'CY140541041US'
+    #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
+    logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
+    #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
+    try :
+        options = Options()
+        options.add_argument('--headless=new')
+        driver = webdriver.Chrome(
+            options=options,
+            # other properties...
+        )
+        scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
+        print('present_url',scraping_url)
+        driver.get(scraping_url)
+        #driver.get('https://www.laposte.fr/outils/track-a-parcel')
+        #driver.maximize_window()
+        driver.implicitly_wait(20)
+        #track = driver.find_element(By.NAME,'code')
+        #track.send_keys(tracking_num)
+        #track.send_keys(Keys.RETURN)
+        #driver.implicitly_wait(20)
 
-    date_times = driver.find_elements(By.CLASS_NAME,'showResults__date')
-    EventDate = []
-    EventDesc = []
-    for i in date_times:
-        parent = i.find_element(By.XPATH,"./..");
-        if (parent.get_attribute("class") == "showResults__item" ):
-            children = parent.find_elements(By.XPATH,'.//*')
-            for j in children:
-                if j.get_attribute("class") == "showResults__date":
-                    EventDate.append(j.get_attribute("innerText"))
-                elif j.get_attribute('class') == "showResults__label green":
-                    EventDesc.append(j.get_attribute("innerText"))
+        date_times = driver.find_elements(By.CLASS_NAME,'showResults__date')
+        EventDate = []
+        EventDesc = []
+        for i in date_times:
+            parent = i.find_element(By.XPATH,"./..");
+            if (parent.get_attribute("class") == "showResults__item" ):
+                children = parent.find_elements(By.XPATH,'.//*')
+                for j in children:
+                    if j.get_attribute("class") == "showResults__date":
+                        EventDate.append(j.get_attribute("innerText"))
+                    elif j.get_attribute('class') in ["showResults__label green", "showResults__label blue"]:
+                        EventDesc.append(j.get_attribute("innerText"))
 
-    driver.quit()
-    track_num = []
-    Dates = []
-    Times = []
-    Loc = []
-    for i in EventDate:
-        #dt = i.split('·')
-        track_num.append(tracking_num)
-        Dates.append(i)
-        Times.append('-')
-        Loc.append('-')
-    #print(len(Dates),len(Times),len(EventDesc))
+        driver.quit()
+        track_num = []
+        Dates = []
+        Times = []
+        Loc = []
+        for i in EventDate:
+            #dt = i.split('·')
+            track_num.append(tracking_num)
+            Dates.append(i)
+            Times.append('-')
+            Loc.append('-')
+        #print(len(Dates),len(Times),len(EventDesc))
 
+        
+        Data = {
+        'Tracking Number' : track_num,
+        'EventDesc' : EventDesc,
+        'EventDate' : Dates,
+        'EventTime' : Times,
+        'EventLocation' : Loc
+        }
+        df = pd.DataFrame(Data)
+        logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
+        country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
+        scraping_tracking_nos.append(str(tracking_num))
+        return df
+    except:
+        country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
+        return tocsv.emtpy_frame()
     
-    Data = {
-    'Tracking Number' : track_num,
-    'EventDesc' : EventDesc,
-    'EventDate' : Dates,
-    'EventTime' : Times,
-    'EventLocation' : Loc
-    }
-    df = pd.DataFrame(Data)
-    print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    return df
-
-#tracking_num ='LV770224450US'
 #get_trackinginfo(tracking_num)
-def scrape_list(tracking_nums,scraping_url,output_path):
+def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
     #print(len(tracking_nums))
-    dfs = []
-    threads =[]
-    for i in tracking_nums[:4]:
-        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],scraping_url,)))
-    
-    for t in threads:
-        t.start()
-
-    for t in threads:
-        dfs.append(t.join())
-
-    country_frame = tocsv.country_frame(COUNTRY)
-    for i in dfs:
-        country_frame.df = country_frame.df._append(i,ignore_index=True)
-    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv(output_path)
+    tracking_nums = tracking_nums[:10]
+    batch_size = 5
+    scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit)

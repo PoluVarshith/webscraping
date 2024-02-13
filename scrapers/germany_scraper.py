@@ -17,10 +17,10 @@ This website can track more than one shipment
 COUNTRY = 'GERMANY'
 def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
     #tracking_num ='CY139955908US'
-    country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
-    logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
@@ -84,7 +84,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
     
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
     #print(len(tracking_nums))
-    tracking_nums = tracking_nums[:20]
-    batch_size = 10
+    tracking_nums = tracking_nums[:5]
+    batch_size = 5   #10 
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit)
 

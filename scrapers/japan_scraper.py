@@ -18,10 +18,10 @@ COUNTRY = 'JAPAN'
 def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
     options = Options()
     options.add_argument('--headless=new')
-    country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num)
-    logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
         driver = webdriver.Chrome(
@@ -93,6 +93,6 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
 
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
     #print(len(tracking_nums))
-    #tracking_nums= tracking_nums[:20]
-    batch_size = 20
+    tracking_nums= tracking_nums[:5]
+    batch_size = 5  #20 
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit)
