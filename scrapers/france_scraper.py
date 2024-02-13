@@ -30,7 +30,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
             # other properties...
         )
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
-        print('present_url',scraping_url)
+        #print('present_url',scraping_url)
         driver.get(scraping_url)
         #driver.get('https://www.laposte.fr/outils/track-a-parcel')
         #driver.maximize_window()
@@ -85,6 +85,6 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
 #get_trackinginfo(tracking_num)
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
     #print(len(tracking_nums))
-    tracking_nums = tracking_nums[:10]
+    tracking_nums = tracking_nums[:5]
     batch_size = 5
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit)
