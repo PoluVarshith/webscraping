@@ -8,11 +8,7 @@ import logfuns
 
     
 def main():
-    #countries = []
     log_dir_path = logfuns.make_logging_dir()
-    #print(log_dir_path)
-    #print(logfuns.make_logging_filepath(log_dir_path))
-
     logger = logfuns.set_logger(log_dir_path)
     logger.info("START TIMESTAMP :"+str(logfuns.get_date_time()))
     table = (snowflake_queries.get_config_table_data())
@@ -30,11 +26,5 @@ def main():
 
     for t in threads:
         returns.append(t.join())
-    
-def main_test():
-    countries = ['SPAIN']
-    for i in countries:
-        scraper.scrape_test(i)
 
-#main_test()
 main()

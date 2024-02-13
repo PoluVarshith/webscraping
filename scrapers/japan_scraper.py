@@ -91,11 +91,12 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
 
 #get_trackinginfo(tracking_num)
 def scrape_list(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
-    tracking_nums= tracking_nums[:0]
+    tracking_nums= tracking_nums[:4]
     log_country_dir_path = logfuns.make_logging_country_dir(COUNTRY,log_dir_path)
     country_logger = logfuns.set_logger(log_dir_path,country=COUNTRY)
     country_logger.info("Total Tracking Numbers :" + str(len(tracking_nums)))
     country_logger.info('List of Tracking Numbers ' + str(tracking_nums))
+    c_audit['ACTUAL_TRACKING_NOS'] = tracking_nums
     c_audit['START_DATETIME'] = logfuns.get_date_time_normal_format()
     scraping_tracking_nos = []
     dfs = []
