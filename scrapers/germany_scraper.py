@@ -9,17 +9,23 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import logfuns
+import scraper
 """
 This website can track more than one shipment
 """
 COUNTRY = 'GERMANY'
-def get_trackinginfo(tracking_num,scraping_url):
+def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
     #tracking_num ='CY139955908US'
+    country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
+    logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
+    logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
-        print(tracking_num)
-        #url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
-        url = ('https://www.deutschepost.de/int-verfolgen/data/search?piececode=' +
-                    str(tracking_num) + '&inputSearch=true&language=en')
+        url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
+        print('germany',url)
+        #url = ('https://www.deutschepost.de/int-verfolgen/data/search?piececode=' + str(tracking_num) + '&inputSearch=true&language=en')
         options = FirefoxOptions()
         options.add_argument("--headless")
         driver = webdriver.Firefox(options=options)
@@ -65,37 +71,19 @@ def get_trackinginfo(tracking_num,scraping_url):
         'EventLocation' : Locs
         }
         df = pd.DataFrame(Data)
+        logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
+        country_logger.info(str(tracking_num) +' scraping successful')
+        scraping_tracking_nos.append(str(tracking_num))
         return df
     except:
-        print("can't fetch data")
+        country_logger.info(str(tracking_num) + " scraping failed")
         return tocsv.emtpy_frame()
 
 #get_trackinginfo(tracking_num)
-def split_list(lst, chunk_size):
-    chunks = [[] for _ in range((len(lst) + chunk_size - 1) // chunk_size)]
-    for i, item in enumerate(lst):
-        chunks[i // chunk_size].append(item)
-    return chunks
-
-def scrape_list(tracking_nums,scraping_url,output_path):
+    
+def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
     #print(len(tracking_nums))
-    dfs = []
-    chunk_size = 8
-    batches = split_list(tracking_nums, chunk_size)
-    for batch in batches:
-        threads =[]
-        for i in batch:
-            threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],scrape_list,)))
-        
-        for t in threads:
-            t.start()
+    tracking_nums = tracking_nums[:8]
+    batch_size = 4
+    scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit)
 
-        for t in threads:
-            dfs.append(t.join())
-
-
-    country_frame = tocsv.country_frame(COUNTRY)
-    for i in dfs:
-        country_frame.df = country_frame.df._append(i,ignore_index=True)
-    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv(output_path)
