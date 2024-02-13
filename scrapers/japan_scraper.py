@@ -30,7 +30,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         #print(scraping_url)
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         #driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en')
-        print(scraping_url)
+        #print(scraping_url)
         driver.get(scraping_url)
         #driver.maximize_window()
         driver.implicitly_wait(50)
@@ -91,7 +91,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
 
 #get_trackinginfo(tracking_num)
 def scrape_list(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
-    #tracking_nums= tracking_nums[:3]
+    tracking_nums= tracking_nums[:0]
     log_country_dir_path = logfuns.make_logging_country_dir(COUNTRY,log_dir_path)
     country_logger = logfuns.set_logger(log_dir_path,country=COUNTRY)
     country_logger.info("Total Tracking Numbers :" + str(len(tracking_nums)))
