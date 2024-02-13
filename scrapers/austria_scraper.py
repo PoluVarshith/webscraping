@@ -98,23 +98,3 @@ def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
     tracking_nums = tracking_nums[:1]
     batch_size = 1
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit)
-
-
-def scrape_list(tracking_nums,scraping_url,output_path):
-    #print(len(tracking_nums))
-    dfs = []
-    threads =[]
-    for i in tracking_nums[:4]:
-        threads.append(twrv.ThreadWithReturnValue(target=get_trackinginfo, args=(i[0],scraping_url,)))
-    
-    for t in threads:
-        t.start()
-
-    for t in threads:
-        dfs.append(t.join())
-
-    country_frame = tocsv.country_frame(COUNTRY)
-    for i in dfs:
-        country_frame.df = country_frame.df._append(i,ignore_index=True)
-    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv(output_path)
