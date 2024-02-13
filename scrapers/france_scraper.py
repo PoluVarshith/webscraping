@@ -66,7 +66,6 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
             Loc.append('-')
         #print(len(Dates),len(Times),len(EventDesc))
 
-        
         Data = {
         'Tracking Number' : track_num,
         'EventDesc' : EventDesc,

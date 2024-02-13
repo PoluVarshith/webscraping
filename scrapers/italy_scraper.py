@@ -8,82 +8,89 @@ from deep_translator import GoogleTranslator
 import tocsv
 import pandas as pd
 import twrv
+import logfuns
+import scraper
+import snowflake_queries
 """
 This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
 COUNTRY = 'ITALY'
-def get_trackinginfo(tracking_num,scraping_url):
-    options = Options()
-    #options.add_argument('--headless=new')
+def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path):
+    #tracking_num = 'LV770247402US'
+    #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
+    logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
+    #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
+    try:
+        options = Options()
+        #options.add_argument('--headless=new')
+        driver = webdriver.Chrome(
+            options=options,
+            # other properties...
+        )
+        scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
+        print('present_url',scraping_url)
+        driver.get(scraping_url)
+        #driver.maximize_window()
+        driver.implicitly_wait(50)
+        #track = driver.find_element(By.CLASS_NAME,'form-control')
+        #track.send_keys(tracking_num)
+        #track.send_keys(Keys.RETURN)
+        #driver.implicitly_wait(30)
 
-    driver = webdriver.Chrome(
-        options=options,
-        # other properties...
-    )
-    url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
-    driver.get(url)
-    #driver.get('https://www.poste.it/cerca/index.html#/risultati-spedizioni/LV770247402US')
-    #driver.maximize_window()
-    driver.implicitly_wait(50)
-    #track = driver.find_element(By.CLASS_NAME,'form-control')
-    #track.send_keys(tracking_num)
-    #track.send_keys(Keys.RETURN)
-    #driver.implicitly_wait(30)
+        Table = driver.find_element(By.CLASS_NAME,'table.table-hover.spacer-xs-top-10.spacer-xs-bottom-0')
+        table = Table.find_elements(By.XPATH,'./*')[1]
+        CourseEntries = table.find_elements(By.XPATH,'./*')
+        #print(len(CourseEntries))
+        EventDate = []
+        EventDesc = []
+        track_num = []
+        Dates = []
+        Times = []
+        Loc = []
+        for i in CourseEntries:
+            date ,time = i.find_element(By.CLASS_NAME,'ng-binding').get_attribute('innerText').split(" ")
+            #print(date,time)
+            desc = i.find_element(By.CLASS_NAME,'text-xs-left.ng-binding').get_attribute('innerText')
+            desc = GoogleTranslator(source='auto', target='en').translate(desc)
+            #print((desc))
+            try:
+                j = i.find_elements(By.XPATH,'./*')[2]
+                loc = (j.get_attribute('innerText')).split('\n')[3]
+                loc = GoogleTranslator(source='auto' , target='en').translate(loc)
+            except:
+                loc = '-'
+            #print(loc)
+            track_num.append(tracking_num)
+            EventDesc.append(desc)
+            Dates.append(date)
+            Times.append(time)
+            Loc.append(loc)
+        #print(len(Dates),len(Times),len(EventDesc))
 
-    Table = driver.find_element(By.CLASS_NAME,'table.table-hover.spacer-xs-top-10.spacer-xs-bottom-0')
-    table = Table.find_elements(By.XPATH,'./*')[1]
-    CourseEntries = table.find_elements(By.XPATH,'./*')
-    #print(len(CourseEntries))
-    EventDate = []
-    EventDesc = []
-    track_num = []
-    Dates = []
-    Times = []
-    Loc = []
-    for i in CourseEntries:
-        date ,time = i.find_element(By.CLASS_NAME,'ng-binding').get_attribute('innerText').split(" ")
-        #print(date,time)
-        desc = i.find_element(By.CLASS_NAME,'text-xs-left.ng-binding').get_attribute('innerText')
-        desc = GoogleTranslator(source='auto', target='en').translate(desc)
-        #print((desc))
-        try:
-            j = i.find_elements(By.XPATH,'./*')[2]
-            loc = (j.get_attribute('innerText')).split('\n')[3]
-            loc = GoogleTranslator(source='auto' , target='en').translate(loc)
-        except:
-            loc = '-'
-        #print(loc)
-        track_num.append(tracking_num)
-        EventDesc.append(desc)
-        Dates.append(date)
-        Times.append(time)
-        Loc.append(loc)
-    #print(len(Dates),len(Times),len(EventDesc))
-
-    driver.quit()
-    Data = {
-    'Tracking Number' : track_num,
-    'EventDesc' : EventDesc,
-    'EventDate' : Dates,
-    'EventTime' : Times,
-    'EventLocation' : Loc
-    }
-    df = pd.DataFrame(Data)
-    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    return df
+        driver.quit()
+        Data = {
+        'Tracking Number' : track_num,
+        'EventDesc' : EventDesc,
+        'EventDate' : Dates,
+        'EventTime' : Times,
+        'EventLocation' : Loc
+        }
+        df = pd.DataFrame(Data)
+        logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
+        country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
+        scraping_tracking_nos.append(str(tracking_num))
+        return df
+    except:
+        country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
+        return tocsv.emtpy_frame()
 
 #tracking_num ='LV770247402US'
 #get_trackinginfo(tracking_num)
-
-def scrape_list(tracking_nums,scraping_url,output_name):
+def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
     #print(len(tracking_nums))
-    dfs = []
-    for i in tracking_nums[:4]:
-        dfs.append(get_trackinginfo(i[0],scraping_url))
-
-    country_frame = tocsv.country_frame(COUNTRY)
-    for i in dfs:
-        country_frame.df = country_frame.df._append(i,ignore_index=True)
-    #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv(output_path)
+    tracking_nums = tracking_nums[:5]
+    batch_size = 5
+    scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit)
