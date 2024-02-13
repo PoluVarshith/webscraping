@@ -20,6 +20,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
+        #print('present_url',scarping_url)
         url = urllib.request.urlopen(scraping_url)
         #url =  urllib.request.urlopen("https://api1.correos.es/digital-services/searchengines/api/v1/?text=" 
         #                            + str(tracking_num) + "&language=EN&searchType=envio") 
@@ -53,11 +54,11 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         }
         df = pd.DataFrame(Data)
         logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
-        country_logger.info(str(tracking_num) +' scraping successful')
+        country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
         scraping_tracking_nos.append(str(tracking_num))
         return df
     except:
-        country_logger.info(str(tracking_num) + " scraping failed")
+        country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
         return tocsv.emtpy_frame()
 
 #get_trackinginfo(tracking_num)

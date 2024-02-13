@@ -28,10 +28,9 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
             options=options,
             # other properties...
         )
-        #print(scraping_url)
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
-        #driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en')
-        #print(scraping_url)
+        #print('present_url',scraping_url)
+        #driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en') 
         driver.get(scraping_url)
         #driver.maximize_window()
         driver.implicitly_wait(50)
@@ -42,7 +41,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         body = Table.find_elements(By.XPATH,'./*')[0]
         CourseEntries = body.find_elements(By.XPATH,'./*')
     except:
-        country_logger.info(str(tracking_num)+ " scraping failed")
+        country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
         return tocsv.emtpy_frame()
     
     #print(len(CourseEntries))
@@ -85,7 +84,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
     }
     df = pd.DataFrame(Data)
     logger.info(str(df[['EventDesc','EventDate','EventTime','EventLocation']]))
-    country_logger.info(str(tracking_num) +' scraping successful')
+    country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
     scraping_tracking_nos.append(str(tracking_num))
     return df
 

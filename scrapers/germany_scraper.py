@@ -23,13 +23,13 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
     logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
-        url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
-        print('germany',url)
+        scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
+        #print('present_url',scraping_url)
         #url = ('https://www.deutschepost.de/int-verfolgen/data/search?piececode=' + str(tracking_num) + '&inputSearch=true&language=en')
         options = FirefoxOptions()
         options.add_argument("--headless")
         driver = webdriver.Firefox(options=options)
-        driver.get(url)
+        driver.get(scraping_url)
         #print(driver.page_source)
         data = driver.find_element(By.TAG_NAME,'body').text
         data = json.loads(data)
@@ -72,18 +72,19 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         }
         df = pd.DataFrame(Data)
         logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
-        country_logger.info(str(tracking_num) +' scraping successful')
+        country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
         scraping_tracking_nos.append(str(tracking_num))
         return df
     except:
-        country_logger.info(str(tracking_num) + " scraping failed")
+        country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
+        country_logger.info('Scraping_Url : '+ str(scraping_url))
         return tocsv.emtpy_frame()
 
 #get_trackinginfo(tracking_num)
     
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
     #print(len(tracking_nums))
-    tracking_nums = tracking_nums[:8]
-    batch_size = 4
+    tracking_nums = tracking_nums[:20]
+    batch_size = 10
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit)
 
