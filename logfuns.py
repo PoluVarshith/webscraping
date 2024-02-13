@@ -28,7 +28,10 @@ def make_logging_dir():
     #path = joinpath('./logs',str(START_TIME))
     #print(path)
     os.mkdir(path)
-    return path
+    output_path = os.path.join(path,'output_csvs')
+    os.mkdir(output_path)
+    return path,output_path
+
 
 def make_logging_filepath(path,country=None,tracking_num=None):
     START_TIME = get_date_time()
