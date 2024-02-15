@@ -46,20 +46,14 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
                 Locs.append(i['Office']+ " " + i['OfficeCode'])
         #print(len(Track_nums),len(Descs))
 
-        Data = {
-        'Tracking Number' : Track_nums,
-        'EventCode' : Codes,
-        'EventDesc' : Descs,
-        'EventDate' : Dates,
-        'EventTime' : Times,
-        'EventLocation' : Locs
-        }
-        df = pd.DataFrame(Data)
+        df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs)        
         logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
         country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
         scraping_tracking_nos.append(str(tracking_num))
         return df
-    except:
+    
+    except Exception as e:
+        #print(e)
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
         return tocsv.emtpy_frame()
 

@@ -54,31 +54,28 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
                         EventDesc.append(j.get_attribute("innerText"))
 
         driver.quit()
-        track_num = []
+        Track_nums = []
+        Codes = []
+        Descs = EventDesc
         Dates = []
         Times = []
-        Loc = []
+        Locs = []
         for i in EventDate:
             #dt = i.split('·')
-            track_num.append(tracking_num)
+            Track_nums.append(tracking_num)
+            Codes.append('')
             Dates.append(i)
             Times.append('-')
-            Loc.append('-')
+            Locs.append('-')
         #print(len(Dates),len(Times),len(EventDesc))
 
-        Data = {
-        'Tracking Number' : track_num,
-        'EventDesc' : EventDesc,
-        'EventDate' : Dates,
-        'EventTime' : Times,
-        'EventLocation' : Loc
-        }
-        df = pd.DataFrame(Data)
+        df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs)
         logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
         country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
         scraping_tracking_nos.append(str(tracking_num))
         return df
-    except:
+    except Exception as e:
+        #print(e)
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
         return tocsv.emtpy_frame()
     

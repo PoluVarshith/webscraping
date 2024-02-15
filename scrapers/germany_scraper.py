@@ -61,21 +61,13 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
                 except:
                     Locs.append('')
         #print(len(Track_nums),len(Descs))
-
-        Data = {
-        'Tracking Number' : Track_nums,
-        'EventCode' : Codes,
-        'EventDesc' : Descs,
-        'EventDate' : Dates,
-        'EventTime' : Times,
-        'EventLocation' : Locs
-        }
-        df = pd.DataFrame(Data)
+        df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs)
         logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
         country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
         scraping_tracking_nos.append(str(tracking_num))
         return df
-    except:
+    except Exception as e:
+        #print(e)
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
         country_logger.info('Scraping_Url : '+ str(scraping_url))
         return tocsv.emtpy_frame()
@@ -84,7 +76,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
     
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
     #print(len(tracking_nums))
-    #tracking_nums = tracking_nums[:20]
+    tracking_nums = tracking_nums[:5]
     batch_size = 5
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit)
 

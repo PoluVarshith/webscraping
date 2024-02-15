@@ -40,22 +40,24 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         #table = Table.find_elements(By.XPATH,'./*')[1]
         body = Table.find_elements(By.XPATH,'./*')[0]
         CourseEntries = body.find_elements(By.XPATH,'./*')
-    except:
+    except Exception as e:
+        #print(e)
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
         return tocsv.emtpy_frame()
     
     #print(len(CourseEntries))
-    EventDate = []
-    EventDesc = []
-    track_num = []
+    Track_nums = []
+    Codes = []
     Dates = []
     Times = []
-    Loc = []
+    Descs = []
+    Locs = []
     for i in range(2,len(CourseEntries),2):
         date_time = CourseEntries[i].find_element(By.CLASS_NAME,'w_120').get_attribute('innerText')
         try:
             date,time = date_time.split(" ")
-        except:
+        except Exception as e:
+        #print(e)
             date = date_time
             time = " "
         #print(date,time)
@@ -67,22 +69,16 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         loc1 = CourseEntries[i+1].find_element(By.CLASS_NAME,'w_105').get_attribute('innerText')
         loc = loc0 +  ' ' + loc1 +' '+ loc2
         #print(loc)
-        track_num.append(tracking_num)
-        EventDesc.append(desc)
+        Track_nums.append(tracking_num)
+        Codes.append('')
+        Descs.append(desc)
         Dates.append(date)
         Times.append(time)
-        Loc.append(loc)
+        Locs.append(loc)
 
-    #print(len(Dates),len(Times),len(EventDesc))
+    #print('lengths',len(Dates),len(Times),len(Descs),len(Times),len(Track_nums))
     driver.quit()
-    Data = {
-    'Tracking Number' : track_num,
-    'EventDesc' : EventDesc,
-    'EventDate' : Dates,
-    'EventTime' : Times,
-    'EventLocation' : Loc
-    }
-    df = pd.DataFrame(Data)
+    df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs)
     logger.info(str(df[['EventDesc','EventDate','EventTime','EventLocation']]))
     country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
     scraping_tracking_nos.append(str(tracking_num))

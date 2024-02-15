@@ -16,6 +16,19 @@ def emtpy_frame():
     #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
     return df
 
+def make_frame(Track_nums,Codes,Descs,Dates,Times,Locs):
+    Data = {
+        'Tracking Number' : Track_nums,
+        'EventCode' : Codes,
+        'EventDesc' : Descs,
+        'EventDate' : Dates,
+        'EventTime' : Times,
+        'EventLocation' : Locs
+        }
+    df = pd.DataFrame(Data)
+    return df
+
+
 class country_frame:
     def __init__(self,country):
         self.country = country
