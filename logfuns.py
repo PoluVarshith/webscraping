@@ -4,7 +4,7 @@ import logging
 
 def get_date_time():
     today = date.today()
-    Date = today.strftime('%d-%m-%Y')
+    Date = today.strftime('%Y-%m-%d')
     now = datetime.now()
     Time = now.strftime("%H_%M_%S")
     START_TIME = Date + 'T' + Time
@@ -13,7 +13,7 @@ def get_date_time():
 
 def get_date_time_normal_format():
     today = date.today()
-    Date = today.strftime('%d-%m-%Y')
+    Date = today.strftime('%Y-%m-%d')
     now = datetime.now()
     Time = now.strftime("%H:%M:%S")
     START_TIME = Date + ' ' + Time
