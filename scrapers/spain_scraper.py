@@ -11,6 +11,12 @@ It needs 30 sec to load fully,  So wait implicitly_wait for 30
 It only give Delivary time and data no location
 """
 COUNTRY  = 'SPAIN'
+def change_date_format(date):
+    d,m,y = date.split('/')
+    new_date = '/'.join([y,m,d])
+    #print(new_date)
+    return new_date
+
 def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
     #tracking_num = 'CY139861975US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
@@ -39,7 +45,8 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
                 Track_nums.append(tracking_num)
                 Codes.append('')
                 Descs.append(i['extendedText'])
-                Dates.append(i['eventDate'])
+                new_date = change_date_format(i['eventDate'])
+                Dates.append(new_date)
                 Times.append(i['eventTime'])
                 Locs.append("")
         #print(len(Track_nums),len(Descs))
@@ -50,13 +57,13 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         scraping_tracking_nos.append(str(tracking_num))
         return df
     except Exception as e:
-        #print(e)
+        print(e)
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
         return tocsv.emtpy_frame()
 
 #get_trackinginfo(tracking_num)
 
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
-    #tracking_nums = tracking_nums[0:1]
+    tracking_nums = tracking_nums[0:1]
     batch_size = 20
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit)
