@@ -15,6 +15,13 @@ import scraper
 The site itself has a button to change french into english
 """
 COUNTRY = 'JAPAN'
+def change_date_format(date):
+    #print(date)
+    m,d,y = date.split('/')
+    new_date = '/'.join([y,m,d])
+    #print(new_date)
+    return new_date
+
 def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
     options = Options()
     options.add_argument('--headless=new')
@@ -56,6 +63,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         date_time = CourseEntries[i].find_element(By.CLASS_NAME,'w_120').get_attribute('innerText')
         try:
             date,time = date_time.split(" ")
+            date = change_date_format(date)
         except Exception as e:
         #print(e)
             date = date_time
@@ -89,6 +97,6 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
 
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
     #print(len(tracking_nums))
-    #tracking_nums= tracking_nums[:5]
+    tracking_nums= tracking_nums[:5]
     batch_size = 5  #20 
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit)

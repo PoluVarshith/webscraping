@@ -15,6 +15,19 @@ import snowflake_queries
 The site itself has a button to change french into english
 """
 COUNTRY = 'FRANCE'
+def change_date_format(date):
+    #print(date)
+    month_dict = {'january':'01','february':'02','march':'03','april':'04','may':'05','june':'06','july':'07','august':'08','september':'09','october':'10','november':'11','december':'12'}
+    day ,d = date.split(",")
+    d = d.strip()
+    d,m = d.split(" ")
+    m = m.lower()
+    m = month_dict[m]
+    y = '2024'
+    new_date = '/'.join([y,m,d])
+    #print(new_date)
+    return new_date
+
 def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path):
     #tracking_num = 'CY140541041US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
@@ -64,7 +77,8 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
             #dt = i.split('·')
             Track_nums.append(tracking_num)
             Codes.append('')
-            Dates.append(i)
+            new_date = change_date_format(i)
+            Dates.append(new_date)
             Times.append('-')
             Locs.append('-')
         #print(len(Dates),len(Times),len(EventDesc))
@@ -75,7 +89,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         scraping_tracking_nos.append(str(tracking_num))
         return df
     except Exception as e:
-        #print(e)
+        print(e)
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
         return tocsv.emtpy_frame()
     
