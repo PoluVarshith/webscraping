@@ -63,10 +63,11 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
                 for j in children:
                     if j.get_attribute("class") == "showResults__date":
                         EventDate.append(j.get_attribute("innerText"))
-                    elif j.get_attribute('class') in ["showResults__label green", "showResults__label blue"]:
+                    elif j.get_attribute('class') in ["showResults__label green", "showResults__label blue",'showResults__label red']:
                         EventDesc.append(j.get_attribute("innerText"))
 
         driver.quit()
+        #print((str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url)))
         Track_nums = []
         Codes = []
         Descs = EventDesc
@@ -81,7 +82,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
             Dates.append(new_date)
             Times.append('-')
             Locs.append('-')
-        #print(len(Dates),len(Times),len(EventDesc))
+        #print(len(Track_nums),len(Codes),len(Descs),len(Dates),len(Times),len(Locs))
 
         df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs)
         logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))

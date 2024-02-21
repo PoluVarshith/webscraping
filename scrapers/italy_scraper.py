@@ -16,8 +16,15 @@ This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
 COUNTRY = 'ITALY'
+def change_date_format(date):
+    #print(date)
+    d,m,y = date.split('/')
+    new_date = '/'.join([y,m,d])
+    #print(new_date)
+    return new_date
+
 def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path):
-    #tracking_num = 'LV770247402US'
+    tracking_num ='LV770378221US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
@@ -25,16 +32,16 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
         options = Options()
-        #options.add_argument('--headless=new')
+        options.add_argument('--headless=new')
         driver = webdriver.Chrome(
             options=options,
             # other properties...
         )
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
-        print('present_url',scraping_url)
+        #print('present_url',scraping_url)
         driver.get(scraping_url)
         #driver.maximize_window()
-        driver.implicitly_wait(50)
+        driver.implicitly_wait(20)
         #track = driver.find_element(By.CLASS_NAME,'form-control')
         #track.send_keys(tracking_num)
         #track.send_keys(Keys.RETURN)
@@ -46,10 +53,12 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         #print(len(CourseEntries))
         EventDate = []
         EventDesc = []
-        track_num = []
+        Track_nums = []
+        Descs = []
+        Codes = []
         Dates = []
         Times = []
-        Loc = []
+        Locs = []
         for i in CourseEntries:
             date ,time = i.find_element(By.CLASS_NAME,'ng-binding').get_attribute('innerText').split(" ")
             #print(date,time)
@@ -63,22 +72,18 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
             except:
                 loc = '-'
             #print(loc)
-            track_num.append(tracking_num)
-            EventDesc.append(desc)
-            Dates.append(date)
+            Track_nums.append(tracking_num)
+            Codes.append('')
+            Descs.append(desc)
+            new_date = change_date_format(date)
+            Dates.append(new_date)
             Times.append(time)
-            Loc.append(loc)
-        #print(len(Dates),len(Times),len(EventDesc))
+            Locs.append(loc)
+        #print(len(Track_nums),len(Codes),len(Descs),len(Dates),len(Times),len(Locs))
 
         driver.quit()
-        Data = {
-        'Tracking Number' : track_num,
-        'EventDesc' : EventDesc,
-        'EventDate' : Dates,
-        'EventTime' : Times,
-        'EventLocation' : Loc
-        }
-        df = pd.DataFrame(Data)
+        
+        df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs)
         logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
         country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
         scraping_tracking_nos.append(str(tracking_num))
@@ -87,7 +92,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
         return tocsv.emtpy_frame()
 
-#tracking_num ='LV770247402US'
+
 #get_trackinginfo(tracking_num)
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
     #print(len(tracking_nums))

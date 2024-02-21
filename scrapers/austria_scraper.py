@@ -16,6 +16,17 @@ This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
 COUNTRY = 'AUSTRIA'
+def change_date_format(date):
+    #print(date)
+    month_dict = {'JÄN':'01','FEB':'02','MÄR':'03','ÄPR':'04','MÄY':'05','JUN':'06','JUL':'07','ÄUG':'08','SEP':'09','OCT':'10','NOV':'11','DEC':'12'}
+    d,m = date.split(" ")
+    d = "%02d" % int(d) if int(d) < 10 else d 
+    m = month_dict[m]
+    y = '2024'
+    new_date = '/'.join([y,m,d])
+    #print(new_date)
+    return new_date
+
 def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path):
     #tracking_num = 'CY140541041US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
@@ -26,7 +37,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
     try:
         options = Options()
         options.add_argument('--headless=new')
-        print(tracking_num)
+        #print(tracking_num)
         driver = webdriver.Chrome(
             options=options,
             # other properties...
@@ -36,7 +47,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         driver.get(scraping_url)
         #driver.get('https://www.post.at/s/sendungsdetails?snr=CJ499904901US')
         #driver.maximize_window()
-        driver.implicitly_wait(10)
+        driver.implicitly_wait(20)
         #track = driver.find_element(By.NAME,'tracking_search')
         #rack.send_keys(tracking_num)
         #track.send_keys(Keys.RETURN)
@@ -70,10 +81,11 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
             Track_nums.append(tracking_num)
             Codes.append('')
             Descs.append(desc)
-            Dates.append(date)
+            new_date = change_date_format(date)
+            Dates.append(new_date)
             Times.append(time)
             Locs.append(loc)
-        #print(len(Dates),len(Times),len(Descs))
+        #print(len(Track_nums),len(Codes),len(Descs),len(Dates),len(Times),len(Locs))
 
         driver.quit()
         
@@ -83,8 +95,9 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         scraping_tracking_nos.append(str(tracking_num))
         return df
     except Exception as e:
-        #print(e)
+        print(e)
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
+        country_logger.info(e)
         return tocsv.emtpy_frame()
 
 #tracking_num ='CJ499904901US'
