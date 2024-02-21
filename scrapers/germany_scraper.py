@@ -4,6 +4,7 @@ import pandas as pd
 import twrv
 from deep_translator import GoogleTranslator
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -15,6 +16,12 @@ import scraper
 This website can track more than one shipment
 """
 COUNTRY = 'GERMANY'
+def change_date_format(date):
+    #print(date)
+    new_date = date
+    #print(new_date)
+    return new_date
+
 def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
     #tracking_num ='CY139955908US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
@@ -27,7 +34,12 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         #print('present_url',scraping_url)
         #url = ('https://www.deutschepost.de/int-verfolgen/data/search?piececode=' + str(tracking_num) + '&inputSearch=true&language=en')
         options = FirefoxOptions()
+        #options = Options()
         options.add_argument("--headless")
+        #driver = webdriver.Chrome(
+        #    options=options,
+            # other properties...
+        #)
         driver = webdriver.Firefox(options=options)
         driver.get(scraping_url)
         #print(driver.page_source)
@@ -54,13 +66,14 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
                 Descs.append(i['status'])
                 date,time = i['datum'].split('T')
                 #print(date,time)
-                Dates.append(date)
+                new_date = change_date_format(date)
+                Dates.append(new_date)
                 Times.append(time)
                 try:
                     Locs.append(i['ort'])
                 except:
                     Locs.append('')
-        #print(len(Track_nums),len(Descs))
+        #print(len(Track_nums),len(Codes),len(Descs),len(Dates),len(Times),len(Locs))
         df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs)
         logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
         country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
@@ -69,14 +82,14 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
     except Exception as e:
         print(e)
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
-        country_logger.info('Scraping_Url : '+ str(scraping_url))
+        #country_logger.info('Scraping_Url : '+ str(scraping_url))
         return tocsv.emtpy_frame()
 
 #get_trackinginfo(tracking_num)
     
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
     #print(len(tracking_nums))
-    tracking_nums = tracking_nums[:5]
+    tracking_nums = tracking_nums[:1]
     batch_size = 5
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit)
 
