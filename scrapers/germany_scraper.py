@@ -33,13 +33,14 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         #print('present_url',scraping_url)
         #url = ('https://www.deutschepost.de/int-verfolgen/data/search?piececode=' + str(tracking_num) + '&inputSearch=true&language=en')
-        options = FirefoxOptions()
-        #options = Options()
-        options.add_argument("--headless")
-        #driver = webdriver.Chrome(
-        #    options=options,
+        
+        """options = Options()
+        driver = webdriver.Chrome(
+            options=options,
             # other properties...
-        #)
+        )"""
+        options = FirefoxOptions()
+        options.add_argument("--headless")
         driver = webdriver.Firefox(options=options)
         driver.get(scraping_url)
         #print(driver.page_source)
