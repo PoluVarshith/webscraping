@@ -44,7 +44,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
                 Dates.append(date)
                 Times.append(time)
                 Locs.append(i['Office']+ " " + i['OfficeCode'])
-        #print(len(Track_nums),len(Descs))
+        #print(len(Track_nums),len(Codes),len(Descs),len(Dates),len(Times),len(Locs))
 
         df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs)        
         logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))

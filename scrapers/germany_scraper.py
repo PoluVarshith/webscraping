@@ -33,7 +33,6 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         #print('present_url',scraping_url)
         #url = ('https://www.deutschepost.de/int-verfolgen/data/search?piececode=' + str(tracking_num) + '&inputSearch=true&language=en')
-        
         """options = Options()
         driver = webdriver.Chrome(
             options=options,
@@ -90,7 +89,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
     
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
     #print(len(tracking_nums))
-    tracking_nums = tracking_nums[:1]
+    tracking_nums = tracking_nums[:5]
     batch_size = 5
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit)
 
