@@ -74,6 +74,8 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         Dates = []
         Times = []
         Locs = []
+        EventZipCode = []
+        IsInHouse=[]
         for i in EventDate:
             #dt = i.split('·')
             Track_nums.append(tracking_num)
@@ -82,9 +84,11 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
             Dates.append(new_date)
             Times.append('-')
             Locs.append('-')
+            EventZipCode.append('')
+            IsInHouse.append("FALSE")
         #print(len(Track_nums),len(Codes),len(Descs),len(Dates),len(Times),len(Locs))
 
-        df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs)
+        df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs,EventZipCode,IsInHouse)
         logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
         country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
         scraping_tracking_nos.append(str(tracking_num))

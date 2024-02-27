@@ -55,6 +55,8 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         Times = []
         Descs = []
         Locs = []
+        EventZipCode=[]
+        IsInHouse = []
         for t in Table:
             date = t.find_elements(By.CLASS_NAME,'sub-menu-item')[0].text
             events = t.find_elements(By.TAG_NAME,'ekp-event-item')
@@ -70,11 +72,13 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
                 desc,loc = dd.split('\n')
                 Descs.append(desc)
                 Locs.append(loc)
+                EventZipCode.append('')
+                IsInHouse.append("FALSE")
                 #print('descloc',desc,loc)
             
         driver.quit()
         #print(len(Track_nums),len(Codes),len(Descs),len(Dates),len(Times),len(Locs))
-        df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs)        
+        df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs,EventZipCode,IsInHouse)        
         logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
         country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
         scraping_tracking_nos.append(str(tracking_num))

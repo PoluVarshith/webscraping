@@ -59,6 +59,8 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
     Times = []
     Descs = []
     Locs = []
+    EventZipCode = []
+    IsInHouse = []
     for i in range(2,len(CourseEntries),2):
         date_time = CourseEntries[i].find_element(By.CLASS_NAME,'w_120').get_attribute('innerText')
         try:
@@ -83,10 +85,12 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         Dates.append(date)
         Times.append(time)
         Locs.append(loc)
+        EventZipCode.append('')
+        IsInHouse.append("FALSE")
 
     #print('lengths',len(Dates),len(Times),len(Descs),len(Times),len(Track_nums))
     driver.quit()
-    df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs)
+    df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs,EventZipCode,IsInHouse)
     logger.info(str(df[['EventDesc','EventDate','EventTime','EventLocation']]))
     country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
     scraping_tracking_nos.append(str(tracking_num))
