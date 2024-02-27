@@ -7,7 +7,7 @@ def get_date_time():
     Date = today.strftime('%Y-%m-%d')
     now = datetime.now()
     Time = now.strftime("%H_%M")
-    START_TIME = Date + 'T' + Time
+    START_TIME = Date + ' ' + Time
     #print(START_TIME)
     return START_TIME
 
