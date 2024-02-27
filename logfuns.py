@@ -6,7 +6,7 @@ def get_date_time():
     today = date.today()
     Date = today.strftime('%Y-%m-%d')
     now = datetime.now()
-    Time = now.strftime("%H_%M_%S")
+    Time = now.strftime("%H_%M")
     START_TIME = Date + 'T' + Time
     #print(START_TIME)
     return START_TIME
@@ -15,7 +15,7 @@ def get_date_time_normal_format():
     today = date.today()
     Date = today.strftime('%Y-%m-%d')
     now = datetime.now()
-    Time = now.strftime("%H:%M:%S")
+    Time = now.strftime("%H:%M")
     START_TIME = Date + ' ' + Time
     #print(START_TIME)
     return START_TIME

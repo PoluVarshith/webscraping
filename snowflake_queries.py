@@ -49,8 +49,8 @@ def get_tracknums(trackingnums_query):
     return sf_result
 
 def insert_audit_info(audit_info,country_logger):
-    start_datetime = "to_timestamp('" + str(audit_info['START_DATETIME']) + "','YYYY-MM-DD HH24:MI:SS')"
-    end_datetime = "to_timestamp('" + str(audit_info['END_DATETIME']) + "','YYYY-MM-DD HH24:MI:SS')" 
+    start_datetime = "to_timestamp('" + str(audit_info['START_DATETIME']) + "','YYYY-MM-DD HH24:MI')"
+    end_datetime = "to_timestamp('" + str(audit_info['END_DATETIME']) + "','YYYY-MM-DD HH24:MI')" 
     #print(start_datetime,end_datetime)
     values = str((audit_info['POSTAL_SITE_ID'],len(audit_info['ACTUAL_TRACKING_NOS']),len(audit_info['SCRAPING_TRACKING_NOS']),'start_datetime','end_datetime',audit_info['STATUS']))
     values = values.replace("'start_datetime'",start_datetime)
