@@ -1,5 +1,7 @@
 import pandas as pd
+import logfuns
 from datetime import datetime
+
 
 def emtpy_frame():
     #to define output file format
@@ -41,7 +43,7 @@ class country_frame:
     
     def write_to_csv(self,output_path):
         #print(self.df[['EventDesc','EventDate','EventTime','EventLocation']])
-        current_datetime = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+        current_datetime = logfuns.get_date_time()
         #output_name = "output_csvs\\" + str(self.country) + " " + str(current_datetime)  + '.csv'
         output_name = output_path + '\\' + str(self.country) + " " + str(current_datetime)  + '.csv'        
         #output_name = "\\\sauw1slprdsftp.file.core.windows.net\cornerstonesftp\FTPData\XPO\EPG\Prod\Tracking\Vendor\CommonVendor\sourcepath\\" + str(self.country) + " " + str(current_datetime)  + '.csv'        
