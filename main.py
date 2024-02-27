@@ -29,3 +29,13 @@ def main():
         returns.append(t.join())
 
 main()
+
+"""
+UW1PRDEPGRDS04
+UW1PRDEPGRDS05
+UW1PRDEPGRDS06
+
+Test - UW1TSTEPGAPP07
+Stage - UW1STGEPGAPP07
+Prod - UW1PRDEPGAPP07
+"""
