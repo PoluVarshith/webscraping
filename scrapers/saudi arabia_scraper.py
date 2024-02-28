@@ -11,6 +11,13 @@ It needs 30 sec to load fully,  So wait implicitly_wait for 30
 It only give Delivary time and data no location
 """
 COUNTRY  = 'SAUDI ARABIA'
+def change_time_format(time):
+    #print(time)
+    h,m,_ = time.split(":")
+    new_time = ':'.join([h,m])
+    #print(new_time)
+    return new_time
+
 def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path):
     #tracking_num = 'CY363813004US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
@@ -44,7 +51,8 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
                 date,time = i['EventDateTime'].split('T')
                 #print(date,time)
                 Dates.append(date)
-                Times.append(time)
+                new_time = change_time_format(time)
+                Times.append(new_time)
                 Locs.append(i['Office']+ " " + i['OfficeCode'])
                 EventZipCode.append('')
                 IsInHouse.append("FALSE")

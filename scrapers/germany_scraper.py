@@ -22,6 +22,14 @@ def change_date_format(date):
     #print(new_date)
     return new_date
 
+def change_time_format(time):
+    #print(time)
+    a,_ = time.split('+')
+    h,m,_ = a.split(":")
+    new_time = ':'.join([h,m])
+    #print(new_time)
+    return new_time
+
 def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
     #tracking_num ='CY139955908US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
@@ -70,7 +78,8 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
                 #print(date,time)
                 new_date = change_date_format(date)
                 Dates.append(new_date)
-                Times.append(time)
+                new_time = change_time_format(time)
+                Times.append(new_time)
                 try:
                     Locs.append(i['ort'])
                 except:
