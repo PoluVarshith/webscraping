@@ -82,8 +82,8 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
             Codes.append('')
             new_date = change_date_format(i)
             Dates.append(new_date)
-            Times.append('-')
-            Locs.append('-')
+            Times.append('')
+            Locs.append('')
             EventZipCode.append('')
             IsInHouse.append("FALSE")
         #print(len(Track_nums),len(Codes),len(Descs),len(Dates),len(Times),len(Locs))
@@ -94,8 +94,8 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         scraping_tracking_nos.append(str(tracking_num))
         return df
     except Exception as e:
-        print(e)
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
+        country_logger.info('Error: '+ str(e))
         return tocsv.emtpy_frame()
     
 #get_trackinginfo(tracking_num)

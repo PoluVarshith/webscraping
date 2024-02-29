@@ -85,9 +85,8 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         return df
 
     except Exception as e:
-        print(e)
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
-        country_logger.info(e)
+        country_logger.info('Error: '+ str(e))
         return tocsv.emtpy_frame()
 
 #get_trackinginfo(tracking_num)

@@ -48,8 +48,8 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         body = Table.find_elements(By.XPATH,'./*')[0]
         CourseEntries = body.find_elements(By.XPATH,'./*')
     except Exception as e:
-        #print(e)
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
+        country_logger.info('Error: '+ str(e))
         return tocsv.emtpy_frame()
     
     #print(len(CourseEntries))
