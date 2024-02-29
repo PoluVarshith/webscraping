@@ -1,3 +1,7 @@
 python -m venv scraping_env
 pip install selenium
 pip install pandas
+pip install SQLAlchemy
+pip install snowflake-connector-python
+pip install --upgrade snowflake-sqlalchemy
+pip install deep-translator
