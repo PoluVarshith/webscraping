@@ -41,13 +41,17 @@ class country_frame:
         self.df = emtpy_frame()
         #print(self.df)
     
-    def write_to_csv(self,output_path):
+    def write_to_csv(self,output_path,output_dir_path):
         #print(self.df[['EventDesc','EventDate','EventTime','EventLocation']])
         current_datetime = logfuns.get_date_time()
-        #output_name = "output_csvs\\" + str(self.country) + " " + str(current_datetime)  + '.csv'
-        output_name = output_path + '\\' + str(self.country) + " " + str(current_datetime)  + '.csv'        
+        try:
+            output_name = output_path + '\\' + str(self.country) + " " + str(current_datetime)  + '.csv'   
+            self.df.to_csv(output_name, sep=',', index=False, encoding='utf-8')
+        except:
+            output_name = output_dir_path + '\\' + str(self.country) + " " + str(current_datetime)  + '.csv'   
+            self.df.to_csv(output_name, sep=',', index=False, encoding='utf-8')
+
         #output_name = "\\\sauw1slprdsftp.file.core.windows.net\cornerstonesftp\FTPData\XPO\EPG\Prod\Tracking\Vendor\CommonVendor\sourcepath\\" + str(self.country) + " " + str(current_datetime)  + '.csv'        
-        self.df.to_csv(output_name, sep=',', index=False, encoding='utf-8')
         #\\sauw1slprdsftp.file.core.windows.net\cornerstonesftp\FTPData\XPO\EPG\Stage\Tracking\Vendor\CommonVendor\SourcePath
         #\\\\sauw1slprdsftp.file.core.windows.net\\cornerstonesftp\\FTPData\\XPO\\EPG\\Stage\\Tracking\\Vendor\\CommonVendor\\sourcepath\\
     

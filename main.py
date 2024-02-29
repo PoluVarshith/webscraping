@@ -17,10 +17,10 @@ def main():
     returns = []
     for c in table:
         postal_side_id,country,query,scraping_url,output_path = c  
-        output_path = output_dir_path  #######IN LOCAL#######      
+        #output_path = output_dir_path  #######IN LOCAL#######      
         c_audit = {}
         c_audit['POSTAL_SITE_ID'] = postal_side_id
-        threads.append(twrv.ThreadWithReturnValue(target=scraper.scrape_country, args=(country,query,scraping_url,output_path,logger,log_dir_path,c_audit,)))
+        threads.append(twrv.ThreadWithReturnValue(target=scraper.scrape_country, args=(country,query,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,)))
 
     for t in threads:
         t.start()

@@ -78,7 +78,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
                 #loc = GoogleTranslator(source='auto' , target='en').translate(loc)
             except Exception as e:
                 #print(e)
-                loc = '-'
+                loc = ''
             #print(loc)
             Track_nums.append(tracking_num)
             Codes.append('')
@@ -106,8 +106,8 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
 #tracking_num ='CJ499904901US'
 #get_trackinginfo(tracking_num)
 
-def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit):
+def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path):
     #print(len(tracking_nums))
     tracking_nums = tracking_nums[:5]
     batch_size = 5
-    scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit)
+    scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path)

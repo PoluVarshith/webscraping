@@ -10,13 +10,13 @@ def chunks(lst, n):
         yield lst[i:i + n]
 
 
-def scrape_country(country,trackingnums_query,scraping_url,output_path,logger,log_dir_path,c_audit):
+def scrape_country(country,trackingnums_query,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path):
     tracking_nums = [str(i[0]) for i in snowflake_queries.get_tracknums(trackingnums_query)]
     logger.info(str(country) + ' Total Tracking Numbers :' + str(len(tracking_nums)))
     logger.info(str(tracking_nums))
     scraper_name = country.lower() + '_scraper'
     scrape_country = getattr(__import__('scrapers', fromlist=[scraper_name]),scraper_name)
-    scrape_country.scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit)
+    scrape_country.scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path)
 
 def scrape_batch(COUNTRY,TRACKIN_FUNC,tracking_nums_batch,scraping_url,output_path,country_logger,log_country_dir_path,c_audit,dfs,scraping_tracking_nos):
     #print(COUNTRY)
@@ -34,7 +34,7 @@ def scrape_batch(COUNTRY,TRACKIN_FUNC,tracking_nums_batch,scraping_url,output_pa
         dfs.append(t.join())
 
 
-def scrape_list(COUNTRY,TRACKIN_FUNC,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit):
+def scrape_list(COUNTRY,TRACKIN_FUNC,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path):
     c_audit['START_DATETIME'] = logfuns.get_date_time_normal_format()
     c_audit['ACTUAL_TRACKING_NOS'] = tracking_nums
     country_logger = logfuns.set_logger(log_dir_path,country=COUNTRY)
@@ -50,7 +50,7 @@ def scrape_list(COUNTRY,TRACKIN_FUNC,tracking_nums,batch_size,scraping_url,outpu
     for i in dfs:
         country_frame.df = country_frame.df._append(i,ignore_index=True)
     #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv(output_path)
+    country_frame.write_to_csv(output_path,output_dir_path)
     c_audit['END_DATETIME'] = logfuns.get_date_time_normal_format()
     c_audit['SCRAPING_TRACKING_NOS'] = scraping_tracking_nos
     c_audit['STATUS'] = 'COMPLETED' if len(list(set(c_audit['ACTUAL_TRACKING_NOS'])-set(c_audit['SCRAPING_TRACKING_NOS']))) == 0 else 'FAILED'
