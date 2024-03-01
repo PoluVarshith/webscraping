@@ -1,6 +1,6 @@
-pip install selenium
-pip install pandas
-pip install SQLAlchemy
-pip install snowflake-connector-python
-pip install --upgrade snowflake-sqlalchemy
-pip install deep-translator
+selenium
+pandas
+SQLAlchemy
+snowflake-connector-python
+snowflake-sqlalchemy
+deep-translator
