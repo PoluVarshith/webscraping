@@ -37,7 +37,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         #print('present_url',scraping_url)
         #print(tracking_num)
         options = Options()
-        #options.add_argument('--headless=new')
+        options.add_argument('--headless=new')
         driver = webdriver.Chrome(
             options=options,
             # other properties...
