@@ -47,7 +47,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         driver.implicitly_wait(20)
         
         main = driver.find_element(By.TAG_NAME,'ekp-event-timeline')
-        main.find_element(By.CLASS_NAME,'text-link.mr-3').send_keys(Keys.RETURN)
+        main.find_element(By.CLASS_NAME,'text-link.me-3').send_keys(Keys.RETURN)
         Table = main.find_elements(By.CLASS_NAME,'pt-2')
         Track_nums = []
         Codes = []

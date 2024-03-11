@@ -51,9 +51,13 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         #track.send_keys(Keys.RETURN)
         #driver.implicitly_wait(30)
 
+        button_over = driver.find_element(By.CLASS_NAME,'col-sm-7')
+        button_list = button_over.find_elements(By.XPATH,'./*')#.send_keys(Keys.RETURN)
+        #print(len(button))
+        button_list[3].send_keys(Keys.RETURN)
         Table = driver.find_element(By.CLASS_NAME,'table.table-hover.spacer-xs-top-10.spacer-xs-bottom-0')
         table = Table.find_elements(By.XPATH,'./*')[1]
-        CourseEntries = table.find_elements(By.XPATH,'./*')
+        CourseEntries = table.find_elements(By.XPATH,'./*') 
         #print(len(CourseEntries))
         Track_nums = []
         Descs = []
@@ -104,6 +108,6 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
 #get_trackinginfo(tracking_num)
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path):
     #print(len(tracking_nums))
-    tracking_nums = tracking_nums[:5]
+    tracking_nums = tracking_nums[:1]
     batch_size = 5
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path)
