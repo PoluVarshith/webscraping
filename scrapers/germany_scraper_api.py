@@ -38,8 +38,8 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
     #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
-        #scraping_url = 'https://www.deutschepost.de/de/s/sendungsverfolgung.html?piececode=#TRACKING_NUM#'
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
+        #craping_url = 'https://www.deutschepost.de/de/s/sendungsverfolgung.html'
         #print('present_url',scraping_url)
         #url = ('https://www.deutschepost.de/int-verfolgen/data/search?piececode=' + str(tracking_num) + '&inputSearch=true&language=en')
         options = Options()
@@ -55,7 +55,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         driver.get(scraping_url)
         #driver.implicitly_wait(10)
         #print(driver.page_source)
-        data = driver.find_element(By.TAG_NAME,'body').text
+        data = driver.find_element(By.TAG_NAME,'pre').text
         data = json.loads(data)
         #print(type(data))
         try :
