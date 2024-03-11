@@ -37,14 +37,14 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         #print('present_url',scraping_url)
         #print(tracking_num)
         options = Options()
-        options.add_argument('--headless=new')
+        #options.add_argument('--headless=new')
         driver = webdriver.Chrome(
             options=options,
             # other properties...
         )
         #driver.get('https://service.post.ch/ekp-web/ui/entry/search/' + str(tracking_num))
         driver.get(scraping_url)
-        driver.implicitly_wait(20)
+        driver.implicitly_wait(5)
         
         main = driver.find_element(By.TAG_NAME,'ekp-event-timeline')
         main.find_element(By.CLASS_NAME,'text-link.me-3').send_keys(Keys.RETURN)
@@ -68,8 +68,13 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
                 Track_nums.append(tracking_num)
                 Codes.append('')
                 #print('datetime',new_date,time)
-                dd = e.find_element(By.CLASS_NAME,'pl-3').text
-                desc,loc = dd.split('\n')
+                dd = e.find_element(By.CLASS_NAME,'col-8.col-md-8.ps-3.d-flex').text
+                dd_split = dd.split('\n')
+                if len(dd_split) < 2:
+                    desc = dd_split[0]
+                    loc = ''
+                else:
+                    desc,loc = dd.split('\n')
                 Descs.append(desc)
                 Locs.append(loc)
                 EventZipCode.append('')
