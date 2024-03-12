@@ -36,7 +36,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
         options = Options()
-        options.add_argument('--headless=new')
+        #options.add_argument('--headless=new')
         driver = webdriver.Chrome(
             options=options,
             # other properties...
@@ -108,6 +108,6 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
 #get_trackinginfo(tracking_num)
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path):
     #print(len(tracking_nums))
-    tracking_nums = tracking_nums[:5]
-    batch_size = 5
+    tracking_nums = tracking_nums[:4]
+    batch_size = 2
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path)
