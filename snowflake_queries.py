@@ -52,13 +52,36 @@ def insert_audit_info(audit_info,country_logger):
     start_datetime = "to_timestamp('" + str(audit_info['START_DATETIME']) + "','YYYY-MM-DD HH24:MI')"
     end_datetime = "to_timestamp('" + str(audit_info['END_DATETIME']) + "','YYYY-MM-DD HH24:MI')" 
     #print(start_datetime,end_datetime)
-    values = str((audit_info['POSTAL_SITE_ID'],len(audit_info['ACTUAL_TRACKING_NOS']),len(audit_info['SCRAPING_TRACKING_NOS']),'start_datetime','end_datetime',audit_info['STATUS']))
+    values = str((audit_info['RUN_ID'],audit_info['POSTAL_SITE_ID'],len(audit_info['ACTUAL_TRACKING_NOS']),len(audit_info['SCRAPING_TRACKING_NOS']),'start_datetime','end_datetime',audit_info['STATUS']))
     values = values.replace("'start_datetime'",start_datetime)
     values = values.replace("'end_datetime'",end_datetime)
     #print(values)
-    insert_audit_info_query = """INSERT INTO DATACLOUD_TEST.ETL.WEB_SCRAPING_AUDIT (POSTAL_SITE_ID,
+    insert_audit_info_query = """INSERT INTO DATACLOUD_TEST.ETL.WEB_SCRAPING_AUDIT (RUN_ID,POSTAL_SITE_ID,
 ACTUAL_TRACKING_NOS,SCRAPING_TRACKING_NOS,START_DATETIME,END_DATETIME,STATUS)
 VALUES""" + values
+    #print('SQL Query for Audit Table insertion: '+insert_audit_info_query)
     country_logger.info('SQL Query for Audit Table insertion: '+insert_audit_info_query)
     execute_sf_query(insert_audit_info_query,'ETL')
-#get_config_table_data()
+    
+    
+def get_prev_run_id():
+    prev_id_query = """SELECT MAX(RUN_ID) from DATACLOUD_TEST.ETL.WEB_SCRAPING_AUDIT;"""
+    prev_id = execute_sf_query(prev_id_query)[0][0]
+    if prev_id == None:
+        prev_id = 0
+    else:
+        prev_id = int(prev_id)
+    #print('prev_id',prev_id)
+    return prev_id
+
+def check_audit_status(prev_id):
+    if prev_id == 0:
+        last_id_query = """SELECT RUN_ID from DATACLOUD_TEST.ETL.WEB_SCRAPING_AUDIT;"""
+    else:
+        last_id_query = """SELECT RUN_ID from DATACLOUD_TEST.ETL.WEB_SCRAPING_AUDIT WHERE RUN_ID > PREV_ID;"""
+        last_id_query = last_id_query.replace('PREV_ID',str(prev_id))
+
+    last_id = execute_sf_query(last_id_query)
+    print(last_id_query,last_id)
+    return
+

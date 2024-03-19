@@ -1,3 +1,4 @@
+pyyaml
 selenium
 pandas
 SQLAlchemy

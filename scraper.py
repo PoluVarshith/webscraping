@@ -10,13 +10,13 @@ def chunks(lst, n):
         yield lst[i:i + n]
 
 
-def scrape_country(country,trackingnums_query,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path):
+def scrape_country(country,trackingnums_query,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id):
     tracking_nums = [str(i[0]) for i in snowflake_queries.get_tracknums(trackingnums_query)]
     logger.info(str(country) + ' Total Tracking Numbers :' + str(len(tracking_nums)))
     logger.info(str(tracking_nums))
     scraper_name = country.lower() + '_scraper'
     scrape_country = getattr(__import__('scrapers', fromlist=[scraper_name]),scraper_name)
-    scrape_country.scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path)
+    scrape_country.scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id)
 
 def scrape_batch(COUNTRY,TRACKIN_FUNC,tracking_nums_batch,scraping_url,output_path,country_logger,log_country_dir_path,c_audit,dfs,scraping_tracking_nos):
     #print(COUNTRY)
@@ -34,7 +34,8 @@ def scrape_batch(COUNTRY,TRACKIN_FUNC,tracking_nums_batch,scraping_url,output_pa
         dfs.append(t.join())
 
 
-def scrape_list(COUNTRY,TRACKIN_FUNC,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path):
+def scrape_list(COUNTRY,TRACKIN_FUNC,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id):
+    c_audit['RUN_ID'] = str(cur_run_id)
     c_audit['START_DATETIME'] = logfuns.get_date_time_normal_format()
     c_audit['ACTUAL_TRACKING_NOS'] = tracking_nums
     country_logger = logfuns.set_logger(log_dir_path,country=COUNTRY)

@@ -1,6 +1,8 @@
 from datetime import datetime,date
 import os
 import logging
+import smtplib
+from email.message import EmailMessage
 
 def get_date_time():
     today = date.today()
@@ -77,3 +79,23 @@ def set_logger(log_dir_path,country=None,tracking_num=None):
 """logging.basicConfig(filename=make_logging_filepath(log_dir_path),
                         format='%(asctime)s - %(levelname)s - %(message)s',
                         filemode='w')"""
+
+def send_audit_notification():
+    sender = 'vpolu@epostglobalshipping.com'
+    sender_password = 'tfizbwqzvxvhvwaf'
+    #tfiz bwqz vxvh vwaf
+    reciever = 'vpolu@epostglobalshipping.com'
+    s = smtplib.SMTP('smtp.gmail.com', 587)
+    s.starttls()
+    s.login(sender,sender_password)
+    message = "Test"
+
+    msg = EmailMessage()
+    msg.set_content('This is my message')
+
+    msg['Subject'] = 'WEB SCRAPING FAILURE'
+    msg['From'] = "vpolu@epostglobalshipping.com"
+    msg['To'] = "vpolu@epostglobalshipping.com,poluvarshith@gmail.com"
+    s.send_message(msg)
+    #s.sendmail(sender, reciever , message)
+    s.quit()
