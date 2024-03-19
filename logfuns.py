@@ -87,9 +87,8 @@ def send_audit_notification(config_data,audit_entries,cur_run_id,postal_ids_to_c
     s = smtplib.SMTP('smtp.gmail.com', 587)
     s.starttls()
     s.login(sender,sender_password)
-
-    status = [i[-1] for i in audit_entries]
-    if 'FAILED' in status:
+    status = [i[3] for i in audit_entries]
+    if 0 in status:
         subject = config_data['ENV'] +  '::' + 'Web Scraping ::RUN_ID=' + str(cur_run_id) + '::Failed'
         body = 'The Web Scraping failed for below countries\n' 
         for i in audit_entries:
@@ -99,11 +98,11 @@ def send_audit_notification(config_data,audit_entries,cur_run_id,postal_ids_to_c
         body += 'please look at logs for additional information'
         #print(body)
     
-    for i in receivers:
-        msg = EmailMessage()
-        msg['Subject'] = subject
-        msg['From'] = sender
-        msg.set_content(body)
-        msg['To'] = i
-        s.send_message(msg)
+        for i in receivers:
+            msg = EmailMessage()
+            msg['Subject'] = subject
+            msg['From'] = sender
+            msg.set_content(body)
+            msg['To'] = i
+            s.send_message(msg)
     s.quit()

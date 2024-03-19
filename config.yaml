@@ -25,7 +25,6 @@ SENDER:
 RECEIVERS:
   - vpolu@epostglobalshipping.com
   #- poluvarshith@gmail.com
-  #- rkarnati@epostglobalshipping.com
+  - rkarnati@epostglobalshipping.com
 
 LOG_PATH :
-  
