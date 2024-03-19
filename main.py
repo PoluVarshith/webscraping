@@ -5,9 +5,16 @@ from datetime import datetime,date
 import os
 import logging
 import logfuns
+import yaml
 
-    
+config_data = []
 def main():
+    with open('config.yaml','r') as config:
+        config_data = yaml.safe_load(config)
+        #print(config_data)
+        connection_details = config_data[config_data['ENV']]
+        snowflake_queries.connection_details = connection_details
+        
     log_dir_path,output_dir_path = logfuns.make_logging_dir()
     logger = logfuns.set_logger(log_dir_path)
     logger.info("START TIMESTAMP :"+str(logfuns.get_date_time()))
@@ -18,10 +25,11 @@ def main():
     prev_run_id = snowflake_queries.get_prev_run_id()
     cur_run_id = prev_run_id + 1
     for c in table:
-        postal_side_id,country,query,scraping_url,output_path = c  
+        postal_site_id,country,query,scraping_url,output_path = c  
+        snowflake_queries.postal_ids_to_countries[postal_site_id] = country
         #output_path = output_dir_path  #######IN LOCAL#######      
         c_audit = {}
-        c_audit['POSTAL_SITE_ID'] = postal_side_id
+        c_audit['POSTAL_SITE_ID'] = postal_site_id
         threads.append(twrv.ThreadWithReturnValue(target=scraper.scrape_country, args=(country,query,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id)))
 
     for t in threads:
@@ -30,8 +38,8 @@ def main():
     for t in threads:
         returns.append(t.join())
 
-    #snowflake_queries.check_audit_status(cur_run_id)
-    #logfuns.send_audit_notification()
+    snowflake_queries.check_audit_status(cur_run_id,config_data)
+
 main()
 
 """
@@ -46,8 +54,8 @@ Prod - UW1PRDEPGAPP07
 
 """
 YAML CONFIG
-snowflake connection details
 env name
+snowflake connection details
 mail details
 log path
 """

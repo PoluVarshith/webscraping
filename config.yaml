@@ -1,0 +1,31 @@
+ENV : TEST
+
+TEST:
+  database : 'DATACLOUD_TEST'
+  user : vpolu
+  password : k!ndRock64
+
+STAGE:
+  database : 'DATACLOUD_STAGE'
+  user : user
+  password : password
+
+PROD:
+  database : database
+  user : user
+  password : password
+
+
+SENDER:
+  email : vpolu@epostglobalshipping.com
+  password : tfizbwqzvxvhvwaf
+  # app password #tfiz bwqz vxvh vwaf
+  #password : k!ndRock64
+
+RECEIVERS:
+  - vpolu@epostglobalshipping.com
+  #- poluvarshith@gmail.com
+  #- rkarnati@epostglobalshipping.com
+
+LOG_PATH :
+  
