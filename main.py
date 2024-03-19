@@ -15,7 +15,8 @@ def main():
         connection_details = config_data[config_data['ENV']]
         snowflake_queries.connection_details = connection_details
         
-    log_dir_path,output_dir_path = logfuns.make_logging_dir()
+    log_dir_path,output_dir_path = logfuns.make_logging_dir(config_data['LOG_PATH'])
+    snowflake_queries.session_log_path = log_dir_path
     logger = logfuns.set_logger(log_dir_path)
     logger.info("START TIMESTAMP :"+str(logfuns.get_date_time()))
     table = (snowflake_queries.get_config_table_data())
@@ -52,10 +53,3 @@ Stage - UW1STGEPGAPP07
 Prod - UW1PRDEPGAPP07
 """
 
-"""
-YAML CONFIG
-env name
-snowflake connection details
-mail details
-log path
-"""

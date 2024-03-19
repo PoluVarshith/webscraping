@@ -6,6 +6,7 @@ import logfuns
 
 connection_details = []
 postal_ids_to_countries = {}
+session_log_path = ''
 def execute_sf_query(sql_stmt,schema='REFERENCE'):
     snowflakeaccount = "https://xf56565.west-us-2.azure.snowflakecomputing.com/"
     snowflake_account = "xf56565.west-us-2.azure"

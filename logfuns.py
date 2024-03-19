@@ -3,6 +3,7 @@ import os
 import logging
 import smtplib
 from email.message import EmailMessage
+import snowflake_queries
 
 def get_date_time():
     today = date.today()
@@ -22,13 +23,13 @@ def get_date_time_normal_format():
     #print(START_TIME)
     return START_TIME
 
-def make_logging_dir():
+def make_logging_dir(log_path):
     START_TIME = get_date_time()
-    cwd = (os.getcwd())
-    path = os.path.join(cwd, 'logs')
-    path = os.path.join(path,'SESSION_'+str(START_TIME) + '_log')
-    #path = joinpath('./logs',str(START_TIME))
+    #cwd = (os.getcwd())
+    #path = os.path.join(cwd, 'logs')
     #print(path)
+    #path = r"C:\Users\vpolu\Desktop\WebScraping\webscraping\logs"
+    path = os.path.join(log_path,'SESSION_'+str(START_TIME) + '_log')
     os.mkdir(path)
     output_path = os.path.join(path,'output_csvs')
     os.mkdir(output_path)
@@ -95,7 +96,7 @@ def send_audit_notification(config_data,audit_entries,cur_run_id,postal_ids_to_c
             if i[-1] == 'FAILED':
                 body += 'POSTAL_ID=' + str(i[1]) + '::COUNTRY NAME=' + str(postal_ids_to_countries[int(i[1])]) + "::PASSED TRACKING NUMBERS=" + str(i[2]) + "::SUCCESSFUL=" + str(i[3]) + "::FAILED=" + str(i[2]-i[3]) + "\n"
         
-        body += 'please look at logs for additional information'
+        body += 'please look at logs for additional information in the log folder: ' + str(snowflake_queries.session_log_path)
         #print(body)
     
         for i in receivers:

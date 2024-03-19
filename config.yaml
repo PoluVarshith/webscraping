@@ -25,6 +25,13 @@ SENDER:
 RECEIVERS:
   - vpolu@epostglobalshipping.com
   #- poluvarshith@gmail.com
-  - rkarnati@epostglobalshipping.com
+  #- rkarnati@epostglobalshipping.com
 
-LOG_PATH :
+LOG_PATH : .\logs
+
+
+#YAML CONFIG
+#env name
+#snowflake connection details
+#mail details
+#log path
