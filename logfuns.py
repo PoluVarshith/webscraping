@@ -93,17 +93,17 @@ def send_audit_notification(config_data,audit_entries,cur_run_id,postal_ids_to_c
         subject = config_data['ENV'] +  '::' + 'Web Scraping ::RUN_ID=' + str(cur_run_id) + '::Failed'
         body = 'The Web Scraping failed for below countries\n' 
         for i in audit_entries:
-            if i[-1] == 'FAILED':
-                body += 'POSTAL_ID=' + str(i[1]) + '::COUNTRY NAME=' + str(postal_ids_to_countries[int(i[1])]) + "::PASSED TRACKING NUMBERS=" + str(i[2]) + "::SUCCESSFUL=" + str(i[3]) + "::FAILED=" + str(i[2]-i[3]) + "\n"
+            if i[3] == 0:
+                body += 'POSTAL_ID=' + str(i[1]) + ' :: COUNTRY NAME=' + str(postal_ids_to_countries[int(i[1])]) + " :: PASSED TRACKING NUMBERS=" + str(i[2]) + " :: SUCCESSFUL=" + str(i[3]) + " :: FAILED=" + str(i[2]-i[3]) + "\n"
         
         body += 'please look at logs for additional information in the log folder: ' + str(snowflake_queries.session_log_path)
         #print(body)
     
-        for i in receivers:
-            msg = EmailMessage()
-            msg['Subject'] = subject
-            msg['From'] = sender
-            msg.set_content(body)
-            msg['To'] = i
-            s.send_message(msg)
+        #for i in receivers:
+        msg = EmailMessage()
+        msg['Subject'] = subject
+        msg['From'] = sender
+        msg.set_content(body)
+        msg['To'] = receivers
+        s.send_message(msg)
     s.quit()

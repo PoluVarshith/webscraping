@@ -4,7 +4,10 @@ TEST:
   database : DATACLOUD_TEST
   user : vpolu
   password : k!ndRock64
+  #user : SAETLDEV
+  #password : 5dQgRK6WvjLqBGp6new
   warehouse : DATACLOUD_COMPUTE_WH
+
 STAGE:
   database : DATACLOUD_STAGE
   user : SAETLDEV
@@ -28,9 +31,8 @@ RECEIVERS:
   - vpolu@epostglobalshipping.com
   - rkarnati@epostglobalshipping.com
 
-#LOG_PATH : E:\3rd_Party_Scheduler\WebScraping\logs
+LOG_PATH : E:\3rd_Party_Scheduler\WebScraping\logs
 
-LOG_PATH : .\logs
 
 #YAML CONFIG
 #env name

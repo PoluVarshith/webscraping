@@ -51,7 +51,7 @@ def scrape_list(COUNTRY,TRACKIN_FUNC,tracking_nums,batch_size,scraping_url,outpu
     for i in dfs:
         country_frame.df = country_frame.df._append(i,ignore_index=True)
     #print(df[['EventDesc','EventDate','EventTime','EventLocation']])
-    country_frame.write_to_csv(output_path,output_dir_path)
+    country_frame.write_to_csv(output_path,output_dir_path,country_logger)
     c_audit['END_DATETIME'] = logfuns.get_date_time_normal_format()
     c_audit['SCRAPING_TRACKING_NOS'] = scraping_tracking_nos
     c_audit['STATUS'] = 'COMPLETED' if len(list(set(c_audit['ACTUAL_TRACKING_NOS'])-set(c_audit['SCRAPING_TRACKING_NOS']))) == 0 else 'FAILED'
