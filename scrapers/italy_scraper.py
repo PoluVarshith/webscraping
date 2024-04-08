@@ -26,9 +26,8 @@ def change_time_format(time):
     new_time = time.replace('.',':')
     return new_time
 
-def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path):
+def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,scraping_url,country_logger,log_country_dir_path):
     #tracking_num ='LV770378221US'
-    tracking_num = 'CY140680851US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
@@ -97,17 +96,19 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
         df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs,EventZipCode,IsInHouse)
         logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
         country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
-        scraping_tracking_nos.append(str(tracking_num))
+        scraped_tracking_nos.append(str(tracking_num))
         return df
     except Exception as e:
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
         country_logger.info('Error: '+ str(e))
+        if "Unable to locate element" in str(e):
+            discarded_tracking_nos.append(str(tracking_num))
         return tocsv.emtpy_frame()
 
 
 #get_trackinginfo(tracking_num)
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id):
     #print(len(tracking_nums))
-    #tracking_nums = tracking_nums[:4]
+    #tracking_nums = tracking_nums[:10]
     batch_size = 2
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id)

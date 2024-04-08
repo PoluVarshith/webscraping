@@ -22,19 +22,20 @@ def change_date_format(date):
     #print(new_date)
     return new_date
 
-def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
-    options = Options()
-    options.add_argument('--headless=new')
+def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
+    #options = Options()
+    #options.add_argument('--headless=new')
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num)
     #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
-        driver = webdriver.Chrome(
+        """driver = webdriver.Chrome(
             options=options,
             # other properties...
-        )
+        )"""
+        driver = webdriver.Edge()
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         #print('present_url',scraping_url)
         #driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en') 
@@ -50,6 +51,8 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
     except Exception as e:
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
         country_logger.info('Error: '+ str(e))
+        if "list index out of range" in str(e):
+            discarded_tracking_nos.append(str(tracking_num))
         return tocsv.emtpy_frame()
     
     #print(len(CourseEntries))
@@ -93,7 +96,7 @@ def get_trackinginfo(tracking_num,scraping_tracking_nos,scraping_url,country_log
     df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs,EventZipCode,IsInHouse)
     logger.info(str(df[['EventDesc','EventDate','EventTime','EventLocation']]))
     country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
-    scraping_tracking_nos.append(str(tracking_num))
+    scraped_tracking_nos.append(str(tracking_num))
     return df
 
 

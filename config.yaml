@@ -1,4 +1,4 @@
-ENV : STAGE
+ENV : TEST
 
 TEST:
   database : DATACLOUD_TEST
@@ -28,9 +28,9 @@ RECEIVERS:
   - vpolu@epostglobalshipping.com
   - rkarnati@epostglobalshipping.com
 
-LOG_PATH : E:\3rd_Party_Scheduler\WebScraping\logs
+#LOG_PATH : E:\3rd_Party_Scheduler\WebScraping\logs
 
-#LOG_PATH : .\logs
+LOG_PATH : .\logs
 
 #YAML CONFIG
 #env name
