@@ -101,7 +101,7 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,sc
     except Exception as e:
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
         country_logger.info('Error: '+ str(e))
-        if "Unable to locate element" in e:
+        if "Unable to locate element" in str(e):
             discarded_tracking_nos.append(str(tracking_num))
         return tocsv.emtpy_frame()
 
