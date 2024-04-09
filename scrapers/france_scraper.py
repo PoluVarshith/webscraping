@@ -60,9 +60,8 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
         try :
             events = data[0]['shipment']['event']
         except Exception as e:
-            print(str(e))
-            print("no data available?")
             country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
+            country_logger.info(str(tracking_num) +' Error : "no data available?  ' + str(scraping_url))
             discarded_tracking_nos.append(str(tracking_num))
             return tocsv.emtpy_frame()
         #print(len(events))
