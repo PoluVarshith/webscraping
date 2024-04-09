@@ -27,8 +27,8 @@ def change_date_format(date):
     #print(new_date)
     return new_date
 
-def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,scraping_url,country_logger,log_country_dir_path):
-    tracking_num = 'CY140541041UA'
+def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path):
+    #tracking_num = 'CY140541041UA'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
@@ -103,6 +103,8 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,sc
         country_logger.info('Error: '+ str(e))
         if "Unable to locate element" in str(e):
             discarded_tracking_nos.append(str(tracking_num))
+        else:
+            failed_tracking_nos.append(str(tracking_num))
         return tocsv.emtpy_frame()
 
 #tracking_num ='CJ499904901US'

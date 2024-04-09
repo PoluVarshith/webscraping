@@ -30,7 +30,7 @@ def change_time_format(time):
     return new_time
 
 def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
-    tracking_num ='CY140541041US'
+    #tracking_num ='CY140541041US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
@@ -106,7 +106,7 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
     
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id):
     #print(len(tracking_nums))
-    tracking_nums = tracking_nums[:20]
+    #tracking_nums = tracking_nums[:20]
     batch_size = 5
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id)
 
