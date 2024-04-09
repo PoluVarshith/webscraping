@@ -18,7 +18,7 @@ This website can track more than one shipment
 COUNTRY = 'GERMANY'
 def change_date_format(date):
     #print(date)
-    new_date = date
+    new_date = date.replace("-",'/')
     #print(new_date)
     return new_date
 
@@ -30,7 +30,7 @@ def change_time_format(time):
     #print(new_time)
     return new_time
 
-def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
+def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
     #tracking_num ='CY139955908US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
@@ -103,6 +103,8 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,sc
         country_logger.info('Error: '+ str(e))
         if "Unable to locate element" in str(e):
             discarded_tracking_nos.append(str(tracking_num))
+        else:
+            failed_tracking_nos.append(str(tracking_num))
         return tocsv.emtpy_frame()
 
 #get_trackinginfo(tracking_num)

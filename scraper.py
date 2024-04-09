@@ -18,14 +18,14 @@ def scrape_country(country,trackingnums_query,scraping_url,output_path,logger,lo
     scrape_country = getattr(__import__('scrapers', fromlist=[scraper_name]),scraper_name)
     scrape_country.scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id)
 
-def scrape_batch(COUNTRY,TRACKIN_FUNC,tracking_nums_batch,scraping_url,output_path,country_logger,log_country_dir_path,c_audit,dfs,scraping_tracking_nos,discarded_tracking_nos):
+def scrape_batch(COUNTRY,TRACKIN_FUNC,tracking_nums_batch,scraping_url,output_path,country_logger,log_country_dir_path,c_audit,dfs,scraping_tracking_nos,discarded_tracking_nos,failed_tracking_nos):
     #print(COUNTRY)
     country_logger.info("Total Tracking Numbers in this batch: " + str(len(tracking_nums_batch)))
     country_logger.info('List of Tracking Numbers in this batch: ' + str(tracking_nums_batch))
     
     threads =[]
     for i in tracking_nums_batch:
-        threads.append(twrv.ThreadWithReturnValue(target=TRACKIN_FUNC, args=(i,scraping_tracking_nos,discarded_tracking_nos,scraping_url,country_logger,log_country_dir_path,)))
+        threads.append(twrv.ThreadWithReturnValue(target=TRACKIN_FUNC, args=(i,scraping_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,)))
     
     for t in threads:
         t.start()
@@ -44,9 +44,10 @@ def scrape_list(COUNTRY,TRACKIN_FUNC,tracking_nums,batch_size,scraping_url,outpu
     log_country_dir_path = logfuns.make_logging_country_dir(COUNTRY,log_dir_path)
     scraped_tracking_nos = []
     discarded_tracking_nos = []
+    failed_tracking_nos = []
     dfs = []
     for i in chunks(tracking_nums,batch_size):
-        scrape_batch(COUNTRY,TRACKIN_FUNC,i,scraping_url,output_path,country_logger,log_country_dir_path,c_audit,dfs,scraped_tracking_nos,discarded_tracking_nos)
+        scrape_batch(COUNTRY,TRACKIN_FUNC,i,scraping_url,output_path,country_logger,log_country_dir_path,c_audit,dfs,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos)
     
     country_frame = tocsv.country_frame(COUNTRY)
     for i in dfs:
@@ -56,9 +57,12 @@ def scrape_list(COUNTRY,TRACKIN_FUNC,tracking_nums,batch_size,scraping_url,outpu
     c_audit['END_DATETIME'] = logfuns.get_date_time_normal_format()
     c_audit['SCRAPED_TRACKING_NOS'] = scraped_tracking_nos
     c_audit['DISCARDED_TRACKING_NOS'] = discarded_tracking_nos
-    new_list = tracking_nums
-    for d in discarded_tracking_nos:
-        new_list.remove(d)
-    c_audit['STATUS'] = 'COMPLETED' if len(list(set(new_list) - set(c_audit['SCRAPED_TRACKING_NOS']))) == 0 else 'FAILED'
+    c_audit['FAILED_TRACKING_NOS'] = failed_tracking_nos
+    c_audit['STATUS'] = 'COMPLETED' if len(failed_tracking_nos) == 0  == 0 else 'FAILED'
+    #c_audit['STATUS'] = 'COMPLETED' if len(list(set(new_list) - set(c_audit['SCRAPED_TRACKING_NOS']))) == 0 else 'FAILED'
     country_logger.info('AUDIT INFO : '+ str(c_audit))
+    #print(len(scraped_tracking_nos),len(discarded_tracking_nos),len(failed_tracking_nos))
+    country_logger.info('Total Scraped Tracking Numbers : '+ str(len(scraped_tracking_nos)))
+    country_logger.info('Total Discarded Tracking Numbers : '+ str(len(discarded_tracking_nos)))
+    country_logger.info('Total Failed Tracking Numbers : '+ str(len(failed_tracking_nos)))
     snowflake_queries.insert_audit_info(c_audit,country_logger)

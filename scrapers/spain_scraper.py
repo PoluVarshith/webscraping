@@ -17,7 +17,7 @@ def change_date_format(date):
     #print(new_date)
     return new_date
 
-def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
+def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
     #tracking_num = 'CY139861975US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('SCRAPING STARTED FOR TRACKING NUMBER: ' + str(tracking_num))
@@ -69,6 +69,9 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,sc
         country_logger.info('Scraping Error for Tracking Number '+ str(tracking_num)+' :' + str(e))
         if "HTTP Error 404: Not Found" in str(e):
             discarded_tracking_nos.append(str(tracking_num))
+        else:
+            failed_tracking_nos.append(str(tracking_num))
+            
         return tocsv.emtpy_frame()
 
 #get_trackinginfo(tracking_num)

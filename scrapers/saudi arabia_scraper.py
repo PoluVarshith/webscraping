@@ -11,6 +11,12 @@ It needs 30 sec to load fully,  So wait implicitly_wait for 30
 It only give Delivary time and data no location
 """
 COUNTRY  = 'SAUDI ARABIA'
+def change_date_format(date):
+    #print(date)
+    new_date = date.replace("-",'/')
+    #print(new_date)
+    return new_date
+
 def change_time_format(time):
     #print(time)
     h,m,_ = time.split(":")
@@ -18,7 +24,7 @@ def change_time_format(time):
     #print(new_time)
     return new_time
 
-def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,scraping_url,country_logger,log_country_dir_path):
+def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path):
     #tracking_num = 'CY363813004US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
@@ -50,7 +56,7 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,sc
                 Descs.append(i['StatusMessage'].strip())
                 date,time = i['EventDateTime'].split('T')
                 #print(date,time)
-                Dates.append(date)
+                Dates.append(change_date_format(date))
                 new_time = change_time_format(time)
                 Times.append(new_time)
                 Locs.append(i['Office']+ " " + i['OfficeCode'])
@@ -69,6 +75,8 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,sc
         country_logger.info('Error: '+ str(e))
         if "NoneType" in str(e):
             discarded_tracking_nos.append(str(tracking_num))
+        else:
+            failed_tracking_nos.append(str(tracking_num))
         return tocsv.emtpy_frame()
 
 #get_trackinginfo(tracking_num)

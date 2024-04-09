@@ -26,7 +26,7 @@ SENDER:
 
 RECEIVERS:
   - vpolu@epostglobalshipping.com
-  - rkarnati@epostglobalshipping.com
+  #- rkarnati@epostglobalshipping.com
 
 #LOG_PATH : E:\3rd_Party_Scheduler\WebScraping\logs
 
