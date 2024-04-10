@@ -11,16 +11,9 @@ import twrv
 import logfuns
 import snowflake_queries
 import scraper
-from selenium.webdriver.common.proxy import Proxy, ProxyType
 """
 The site itself has a button to change french into english
 """
-myProxy = '167.71.230.124:8080'
-proxy = Proxy({
-    'proxyType': ProxyType.MANUAL,
-    'httpProxy': myProxy,
-    'sslProxy': myProxy,
-    'noProxy': ''})
 COUNTRY = 'JAPAN'
 def change_date_format(date):
     #print(date)
@@ -30,8 +23,7 @@ def change_date_format(date):
     return new_date
 
 def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path=None):
-    options = Options()
-    #options.proxy = proxy
+    #options = Options()
     #options.add_argument('--headless=new')
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
@@ -39,11 +31,11 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
     #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
-        driver = webdriver.Chrome(
+        """driver = webdriver.Chrome(
             options=options,
             # other properties...
-        )
-        #driver = webdriver.Edge()
+        )"""
+        driver = webdriver.Edge()
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         #print('present_url',scraping_url)
         #driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en') 
@@ -114,6 +106,6 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
 
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id):
     #print(len(tracking_nums))
-    tracking_nums= tracking_nums[:2]
+    #tracking_nums= tracking_nums[:1]
     batch_size = 5  #20 
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id)
