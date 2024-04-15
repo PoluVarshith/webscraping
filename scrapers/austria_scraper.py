@@ -55,8 +55,8 @@ def change_time(time,date):
     new_date = '/'.join([str(yyyy),str(mm),str(dd)])
     print(new_time,new_date,'down here')
     #print(hr,mn,dd,mm,yyyy,'down here')
-    new_time = time
-    new_date = date
+    #new_time = time
+    #new_date = date
     return new_time,new_date
 
 def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
