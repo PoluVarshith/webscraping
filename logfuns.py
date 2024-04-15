@@ -107,3 +107,51 @@ def send_audit_notification(config_data,audit_entries,cur_run_id,postal_ids_to_c
         msg['To'] = receivers
         s.send_message(msg)
     s.quit()
+
+# Austria :CY141273077US
+
+def change_time(time,date,offset):
+    #print(time,date,offset,'here')
+    hr,mn = [int(x) for x in time.split(":")]
+    yyyy,mm,dd = [int(x) for x in date.split("/")]
+    #print(hr,mn,yyyy,mm,dd,'here')
+    mn = mn - offset[1]
+    if mn < 0:
+        hr = hr -1
+        mn = mn + 60
+
+    hr = hr - offset[0]
+    if hr < 0 :
+        dd = dd - 1
+        hr = hr + 24
+        if dd == 0:
+            mm = mm -1
+            if mm == 0:
+                mm = 12
+                yyyy = yyyy - 1
+            if mm in [1,3,5,7,8,10,12]:
+                dd = 31
+            else :
+                dd = 30
+    if hr > 24:
+        hr = hr -24
+        dd = dd + 1
+        if mm in [1,3,5,7,8,10,12]:
+            if dd > 31:
+                dd = dd - 31
+                mm = mm + 1
+                if mm > 12:
+                    mm = mm-12
+                    yyyy = yyyy + 1
+        elif mm in [2,4,6,9,11]:
+            if dd >30:
+                dd = dd - 30
+                mm = mm + 1
+                
+    new_time = ':'.join([str(hr),str(mn)])
+    new_date = '/'.join([str(yyyy),str(mm),str(dd)])
+    #print(new_time,new_date,'down here')
+    #print(hr,mn,dd,mm,yyyy,'down here')
+    #new_time = time
+    #new_date = date
+    return new_time,new_date
