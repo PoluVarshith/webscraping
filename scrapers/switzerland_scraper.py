@@ -13,6 +13,7 @@ import logfuns
 """
 """
 COUNTRY = 'SWITZERLAND'
+offset = [-7,0]
 def change_date_format(date):
     #print(date)
     month_dict = {'january':'01','february':'02','march':'03','april':'04','may':'05','june':'06','july':'07','august':'08','september':'09','october':'10','november':'11','december':'12'}
@@ -25,7 +26,7 @@ def change_date_format(date):
     #print(new_date)
     return new_date
 
-def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path):
+def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
     #tracking_num = 'CY140486433US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
@@ -63,8 +64,9 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
             new_date = change_date_format(date)
             for e in events:
                 time = e.find_element(By.CLASS_NAME,'col-1.time').text
+                new_time,new_date = logfuns.change_time(time,new_date,offset)
                 Dates.append(new_date)
-                Times.append(time)
+                Times.append(new_time)
                 Track_nums.append(tracking_num)
                 Codes.append('')
                 #print('datetime',new_date,time)
@@ -99,8 +101,8 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
         return tocsv.emtpy_frame()
 
 #get_trackinginfo(tracking_num)
-def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id):
+def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
-    #tracking_nums = tracking_nums[:10]
+    #tracking_nums = tracking_nums[:5]
     batch_size = 5
-    scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id)
+    scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)

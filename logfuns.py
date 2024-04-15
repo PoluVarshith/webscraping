@@ -133,7 +133,7 @@ def change_time(time,date,offset):
                 dd = 31
             else :
                 dd = 30
-    if hr > 24:
+    if hr >= 24:
         hr = hr -24
         dd = dd + 1
         if mm in [1,3,5,7,8,10,12]:
