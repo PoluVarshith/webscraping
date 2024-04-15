@@ -84,6 +84,6 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
 
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id):
     #print(len(tracking_nums))
-    tracking_nums = tracking_nums[0:1]
+    #tracking_nums = tracking_nums[0:1]
     batch_size = 10
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id)

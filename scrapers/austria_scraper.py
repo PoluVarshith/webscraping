@@ -18,7 +18,7 @@ It needs 30 sec to load fully,  So wai implicitly_wait for 30
 COUNTRY = 'AUSTRIA'
 def change_date_format(date):
     #print(date)
-    month_dict = {'JÄN':'01','FEB':'02','MÄR':'03','ÄPR':'04','MÄY':'05','JUN':'06','JUL':'07','ÄUG':'08','SEP':'09','OCT':'10','NOV':'11','DEC':'12'}
+    month_dict = {'JÄN':'01','FEB':'02','MÄR':'03','ÄPR':'04','APR':'04','MÄY':'05','JUN':'06','JUL':'07','ÄUG':'08','SEP':'09','OCT':'10','NOV':'11','DEC':'12'}
     d,m = date.split(" ")
     d = "%02d" % int(d) if int(d) < 10 else d 
     m = month_dict[m]
@@ -27,7 +27,13 @@ def change_date_format(date):
     #print(new_date)
     return new_date
 
-def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path):
+def change_time(time,date,config_data):
+    print(time,date,config_data['UTC_Offset'],'here')
+    new_time = time
+    new_date = date
+    return new_time,new_date
+
+def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
     #tracking_num = 'CY140541041UA'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
@@ -67,9 +73,10 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
         for i in CourseEntries:
             children = i.find_element(By.CLASS_NAME,'tracking__history-date')
             date = (children.get_attribute('innerText')).replace('\n',' ')
+            new_date = change_date_format(date)
             details = i.find_element(By.CLASS_NAME,'tracking__history-details')
             time = details.find_element(By.CLASS_NAME,'tracking__history-time').get_attribute('innerText')
-            #print(date,time)
+            new_time,new_date = change_time(time,new_date,config_data)
             desc = details.find_element(By.CLASS_NAME,'tracking__history-status').get_attribute('innerText')
             desc = GoogleTranslator(source='auto', target='en').translate(desc)
             #print((desc))
@@ -83,9 +90,8 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
             Track_nums.append(tracking_num)
             Codes.append('')
             Descs.append(desc)
-            new_date = change_date_format(date)
             Dates.append(new_date)
-            Times.append(time)
+            Times.append(new_time)
             Locs.append(loc)
             EventZipCode.append('')
             IsInHouse.append("FALSE")
@@ -110,8 +116,8 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
 #tracking_num ='CJ499904901US'
 #get_trackinginfo(tracking_num)
 
-def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id):
+def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
-    #tracking_nums = tracking_nums[:1]
+    tracking_nums = tracking_nums[:2]
     batch_size = 5
-    scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id)
+    scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)

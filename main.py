@@ -33,7 +33,7 @@ def main():
         #output_path = output_dir_path  #######IN LOCAL#######      
         c_audit = {}
         c_audit['POSTAL_SITE_ID'] = postal_site_id
-        threads.append(twrv.ThreadWithReturnValue(target=scraper.scrape_country, args=(country,query,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id)))
+        threads.append(twrv.ThreadWithReturnValue(target=scraper.scrape_country, args=(country,query,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)))
 
     for t in threads:
         t.start()

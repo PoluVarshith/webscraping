@@ -12,10 +12,17 @@ import logfuns
 import snowflake_queries
 import scraper
 from selenium.webdriver.common.proxy import Proxy, ProxyType
+from fp.fp import FreeProxy
+
+
+
 """
 The site itself has a button to change french into english
 """
-myProxy = '167.71.230.124:8080'
+myProxy = FreeProxy().get()
+myProxy = FreeProxy(country_id=['IND']).get()
+print(myProxy)
+#exit()
 proxy = Proxy({
     'proxyType': ProxyType.MANUAL,
     'httpProxy': myProxy,

@@ -32,6 +32,8 @@ RECEIVERS:
 
 LOG_PATH : .\logs
 
+UTC_Offset : (5,30) 
+
 #YAML CONFIG
 #env name
 #snowflake connection details
