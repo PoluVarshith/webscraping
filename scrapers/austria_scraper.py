@@ -16,6 +16,7 @@ This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
 COUNTRY = 'AUSTRIA'
+offset = [5,30]
 def change_date_format(date):
     #print(date)
     month_dict = {'JÄN':'01','FEB':'02','MÄR':'03','ÄPR':'04','APR':'04','MÄY':'05','JUN':'06','JUL':'07','ÄUG':'08','SEP':'09','OCT':'10','NOV':'11','DEC':'12'}
@@ -27,8 +28,33 @@ def change_date_format(date):
     #print(new_date)
     return new_date
 
-def change_time(time,date,config_data):
-    print(time,date,config_data['UTC_Offset'],'here')
+def change_time(time,date):
+    print(time,date,offset,'here')
+    hr,mn = [int(x) for x in time.split(":")]
+    yyyy,mm,dd = [int(x) for x in date.split("/")]
+    print(hr,mn,dd,mm,yyyy,'here')
+    mn = mn - offset[1]
+    if mn < 0:
+        hr = hr -1
+        mn = mn + 60
+
+    hr = hr - offset[0]
+    if hr < 0 :
+        dd = dd - 1
+        hr = hr + 24
+    if dd == 0:
+        mm = mm -1
+        if mm == 0:
+            mm = 12
+            yyyy = yyyy - 1
+        if mm in [1,3,5,7,8,10,12]:
+            dd = 31
+        else :
+            dd = 30
+    new_time = ':'.join([str(hr),str(mn)])
+    new_date = '/'.join([str(yyyy),str(mm),str(dd)])
+    print(new_time,new_date,'down here')
+    #print(hr,mn,dd,mm,yyyy,'down here')
     new_time = time
     new_date = date
     return new_time,new_date
@@ -73,10 +99,10 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
         for i in CourseEntries:
             children = i.find_element(By.CLASS_NAME,'tracking__history-date')
             date = (children.get_attribute('innerText')).replace('\n',' ')
-            new_date = change_date_format(date)
+            date = change_date_format(date)
             details = i.find_element(By.CLASS_NAME,'tracking__history-details')
             time = details.find_element(By.CLASS_NAME,'tracking__history-time').get_attribute('innerText')
-            new_time,new_date = change_time(time,new_date,config_data)
+            new_time,new_date = change_time(time,date)
             desc = details.find_element(By.CLASS_NAME,'tracking__history-status').get_attribute('innerText')
             desc = GoogleTranslator(source='auto', target='en').translate(desc)
             #print((desc))
@@ -118,6 +144,6 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
 
 def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
-    tracking_nums = tracking_nums[:2]
+    tracking_nums = tracking_nums[:1]
     batch_size = 5
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)
