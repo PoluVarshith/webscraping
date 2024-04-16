@@ -111,6 +111,7 @@ def send_audit_notification(config_data,audit_entries,cur_run_id,postal_ids_to_c
 # Austria :CY141273077US
 # Italy CY141191090US
 # Switzerland CY141288363US
+# France CY141194096US
 
 def change_time(time,date,offset):
     #print(time,date,offset,'here')

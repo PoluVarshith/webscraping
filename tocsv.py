@@ -45,6 +45,7 @@ class country_frame:
         #print(self.df[['EventDesc','EventDate','EventTime','EventLocation']])
         current_datetime = logfuns.get_date_time()
         try:
+            raise
             country_logger.info('Trying to Create Output File in Source Path')
             output_name = output_path + '\\' + str(self.country) + " " + str(current_datetime)  + '.csv'   
             self.df.to_csv(output_name, sep=',', index=False, encoding='utf-8')
