@@ -118,12 +118,12 @@ def change_time(time,date,offset):
     hr,mn = [int(x) for x in time.split(":")]
     yyyy,mm,dd = [int(x) for x in date.split("/")]
     #print(hr,mn,yyyy,mm,dd,'here')
-    mn = mn - offset[1]
+    mn = mn + offset[1]
     if mn < 0:
         hr = hr -1
         mn = mn + 60
 
-    hr = hr - offset[0]
+    hr = hr + offset[0]
     if hr < 0 :
         dd = dd - 1
         hr = hr + 24
@@ -151,7 +151,7 @@ def change_time(time,date,offset):
                 dd = dd - 30
                 mm = mm + 1
                 
-    new_time = ':'.join([str(hr),str(mn)])
+    new_time = ':'.join(["%02d" % hr,"%02d" % mn])
     new_date = '/'.join([str(yyyy),str(mm),str(dd)])
     #print(new_time,new_date,'down here')
     #print(hr,mn,dd,mm,yyyy,'down here')

@@ -16,7 +16,7 @@ This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
 COUNTRY = 'AUSTRIA'
-offset = [-7,0]
+offset = [7,0]
 def change_date_format(date):
     #print(date)
     month_dict = {'JÄN':'01','FEB':'02','MÄR':'03','ÄPR':'04','APR':'04','MÄY':'05','JUN':'06','JUL':'07','ÄUG':'08','SEP':'09','OCT':'10','NOV':'11','DEC':'12'}
@@ -28,9 +28,15 @@ def change_date_format(date):
     #print(new_date)
     return new_date
 
-def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
+def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
     #tracking_num = 'CY141273077US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    tracking_num,facility_code = tracking_info
+    try:
+        offset = list(config_data['OFFSET'][COUNTRY][str(facility_code)].values())
+    except:
+        offset = [0,0]
+
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
     #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
@@ -78,6 +84,7 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
             try:
                 loc = details.find_element(By.CLASS_NAME,'tracking__history-location').get_attribute('innerText')
                 #loc = GoogleTranslator(source='auto' , target='en').translate(loc)
+                #print('location',tracking_num,loc)
             except Exception as e:
                 #print(e)
                 loc = ''
@@ -111,8 +118,8 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
 #tracking_num ='CJ499904901US'
 #get_trackinginfo(tracking_num)
 
-def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
+def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
-    #tracking_nums = tracking_nums[:1]
+    #tracking_info = tracking_info[:1]
     batch_size = 5
-    scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)
+    scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)

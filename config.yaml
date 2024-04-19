@@ -32,6 +32,42 @@ RECEIVERS:
 
 LOG_PATH : .\logs
 
+OFFSET :
+  AUSTRIA :
+    LAX :
+      HOUR : 7 
+      MIN  : 0
+    ORD:
+      HOUR : 7
+      MIN  : 0
+    EWR :
+      HOUR : 7 
+      MIN  : 0
+  ITALY :
+    LAX :
+      HOUR : 6 
+      MIN  : 0
+    ORD:
+      HOUR : 6 
+      MIN  : 0
+    EWR :
+      HOUR : 7
+      MIN  : 0
+  SWITZERLAND :
+    LAX :
+      HOUR : 7 
+      MIN  : 0
+    ORD:
+      HOUR : 7 
+      MIN  : 0
+    EWR :
+      HOUR : 6 
+      MIN  : 0
+    MIA :
+      HOUR : 6
+      MIN  : 0
+     
+  
 #YAML CONFIG
 #env name
 #snowflake connection details

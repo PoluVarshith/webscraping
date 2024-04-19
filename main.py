@@ -15,6 +15,8 @@ def main():
         connection_details = config_data[config_data['ENV']]
         snowflake_queries.connection_details = connection_details
         
+    #exit()
+        
     log_dir_path,output_dir_path = logfuns.make_logging_dir(config_data['LOG_PATH'])
     snowflake_queries.session_log_path = log_dir_path
     logger = logfuns.set_logger(log_dir_path)

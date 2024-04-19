@@ -31,10 +31,15 @@ def change_time_format(time):
     #print(new_time)
     return new_time
 
-def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
+def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
     #tracking_num ='CY139955908US'
     #tracking_num = 'CY141216993US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
+    tracking_num,facility_code = tracking_info
+    try:
+        offset = list(config_data['OFFSET'][COUNTRY][str(facility_code)].values())
+    except:
+        offset = [0,0]
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
     #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
@@ -114,8 +119,8 @@ def get_trackinginfo(tracking_num,scraped_tracking_nos,discarded_tracking_nos,fa
 
 #get_trackinginfo(tracking_num)
     
-def scrape(tracking_nums,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
+def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
-    #tracking_nums = tracking_nums[:1]
+    #tracking_info = tracking_info[:1]
     batch_size = 5
-    scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_nums,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)
+    scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)
