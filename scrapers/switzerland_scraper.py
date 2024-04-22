@@ -10,6 +10,10 @@ import pandas as pd
 import twrv
 import scraper
 import logfuns
+import spacy
+import en_core_web_sm
+nlp = en_core_web_sm.load()
+
 """
 """
 COUNTRY = 'SWITZERLAND'
@@ -83,6 +87,12 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
                     desc,loc = dd.split('\n')
                 Descs.append(desc)
                 Locs.append(loc)
+                doc = nlp(loc)
+                print(loc,'loc')
+                print(doc.ents)
+                for ent in doc.ents:
+                    print(ent.text, ent.label_)
+                #print(loc)
                 EventZipCode.append('')
                 IsInHouse.append("FALSE")
                 #print('descloc',desc,loc)
@@ -106,7 +116,6 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 
 #get_trackinginfo(tracking_num)
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
-    #print(len(tracking_nums))
-    #tracking_nums = tracking_nums[:5]
+    tracking_info = tracking_info[:1]
     batch_size = 5
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)

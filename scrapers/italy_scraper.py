@@ -30,12 +30,11 @@ def change_time_format(time):
 def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     tracking_num,facility_code = tracking_info
-    #tracking_num ='CY141266221US'
+    #tracking_num ='CY141434738US'
     try:
         offset = list(config_data['OFFSET'][COUNTRY][str(facility_code)].values())
     except:
         offset = [0,0]
-    print(offset)
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
     #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
@@ -81,10 +80,14 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
             #print((desc))
             try:
                 j = i.find_elements(By.XPATH,'./*')[2]
-                loc = (j.get_attribute('innerText')).split('\n')[3]
+                loc = (j.get_attribute('innerText')).split('\n')[0]
                 loc = GoogleTranslator(source='auto' , target='en').translate(loc)
-            except:
+            except Exception as e:
+                #print('location error',e)
                 loc = '-'
+            
+            if 'united states' in loc.lower():
+                continue
             #print(loc)
             Track_nums.append(tracking_num)
             Codes.append('')
@@ -119,6 +122,6 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 #get_trackinginfo(tracking_num)
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
-    tracking_info = tracking_info[7:8]
+    #tracking_info = tracking_info[9:10]
     batch_size = 2
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)
