@@ -13,7 +13,6 @@ from selenium.webdriver.support import expected_conditions as EC
 import logfuns
 import scraper
 
-
 COUNTRY = 'FRANCE'
 def change_date_format(date):
     #print(date)

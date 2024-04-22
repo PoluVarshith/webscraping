@@ -16,7 +16,6 @@ This website can track more than one shipment
 It needs 30 sec to load fully,  So wai implicitly_wait for 30
 """
 COUNTRY = 'AUSTRIA'
-offset = [7,0]
 def change_date_format(date):
     #print(date)
     month_dict = {'JÄN':'01','FEB':'02','MÄR':'03','ÄPR':'04','APR':'04','MÄY':'05','JUN':'06','JUL':'07','ÄUG':'08','SEP':'09','OCT':'10','NOV':'11','DEC':'12'}
