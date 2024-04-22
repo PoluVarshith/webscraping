@@ -28,9 +28,9 @@ def change_date_format(date):
     return new_date
 
 def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
-    #tracking_num = 'CY141273077US'
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     tracking_num,facility_code = tracking_info
+    #tracking_num = 'CY141273077US'
     try:
         offset = list(config_data['OFFSET'][COUNTRY][str(facility_code)].values())
     except:

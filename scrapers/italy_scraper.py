@@ -19,6 +19,7 @@ COUNTRY = 'ITALY'
 def change_date_format(date):
     #print(date)
     d,m,y = date.split('/')
+    #new_date = '/'.join([y,"%02d" % int(m),"%02d" % int(d)])
     new_date = '/'.join([y,m,d])
     #print(new_date)
     return new_date

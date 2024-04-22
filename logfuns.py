@@ -152,7 +152,7 @@ def change_time(time,date,offset):
                 mm = mm + 1
                 
     new_time = ':'.join(["%02d" % hr,"%02d" % mn])
-    new_date = '/'.join([str(yyyy),str(mm),str(dd)])
+    new_date = '/'.join([str(yyyy),"%02d" % int(mm), "%02d" % int(dd)])
     #print(new_time,new_date,'down here')
     #print(hr,mn,dd,mm,yyyy,'down here')
     #new_time = time
