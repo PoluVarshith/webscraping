@@ -10,13 +10,10 @@ import pandas as pd
 import twrv
 import scraper
 import logfuns
-import spacy
-import en_core_web_sm
-nlp = en_core_web_sm.load()
 
-"""
-"""
+
 COUNTRY = 'SWITZERLAND'
+US_location_Entities = ['chicago','kennedy','miami','jamaica','los angeles','south hackensack','usmiaa','uslaxa']
 def change_date_format(date):
     #print(date)
     month_dict = {'january':'01','february':'02','march':'03','april':'04','may':'05','june':'06','july':'07','august':'08','september':'09','october':'10','november':'11','december':'12'}
@@ -32,7 +29,7 @@ def change_date_format(date):
 def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     tracking_num,facility_code = tracking_info
-    #tracking_num = 'CY140486433US'
+    #tracking_num = 'CY141288363US '
     try:
         offset = list(config_data['OFFSET'][COUNTRY][str(facility_code)].values())
     except:
@@ -46,7 +43,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         #print('present_url',scraping_url)
         #print(tracking_num)
         options = Options()
-        options.add_argument('--headless=new')
+        #options.add_argument('--headless=new')
         driver = webdriver.Chrome(
             options=options,
             # other properties...
@@ -56,7 +53,11 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         driver.implicitly_wait(5)
         
         main = driver.find_element(By.TAG_NAME,'ekp-event-timeline')
-        main.find_element(By.CLASS_NAME,'text-link.me-3').send_keys(Keys.RETURN)
+        try:
+            main.find_element(By.CLASS_NAME,'text-link.me-3').send_keys(Keys.RETURN)
+        except Exception as e:
+            print("check if there is only one tab for the tracking number")
+            #print("error :",e)
         Table = main.find_elements(By.CLASS_NAME,'pt-2')
         Track_nums = []
         Codes = []
@@ -73,26 +74,29 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
             for e in events:
                 time = e.find_element(By.CLASS_NAME,'col-1.time').text
                 new_time,new_date = logfuns.change_time(time,new_date,offset)
-                Dates.append(new_date)
-                Times.append(new_time)
-                Track_nums.append(tracking_num)
-                Codes.append('')
-                #print('datetime',new_date,time)
                 dd = e.find_element(By.CLASS_NAME,'col-8.col-md-8.ps-3.d-flex').text
                 dd_split = dd.split('\n')
                 if len(dd_split) < 2:
                     desc = dd_split[0]
                     loc = ''
                 else:
-                    desc,loc = dd.split('\n')
+                    #print(dd)
+                    desc = dd_split[0]
+                    loc = dd_split[1]
+                
+                ignore = False
+                ignore = bool([r for r in US_location_Entities if(r in loc.lower())])
+                #if ignore == False:
+                #   continue 
+                #else:
+                #print(loc,'loc',ignore)
+                Dates.append(new_date)
+                Times.append(new_time)
+                Track_nums.append(tracking_num)
+                Codes.append('')
+                #print('datetime',new_date,time)
                 Descs.append(desc)
                 Locs.append(loc)
-                doc = nlp(loc)
-                print(loc,'loc')
-                print(doc.ents)
-                for ent in doc.ents:
-                    print(ent.text, ent.label_)
-                #print(loc)
                 EventZipCode.append('')
                 IsInHouse.append("FALSE")
                 #print('descloc',desc,loc)
@@ -104,7 +108,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
         scraped_tracking_nos.append(str(tracking_num))
         return df
-
+    
     except Exception as e:
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
         country_logger.info('Error: '+ str(e))
