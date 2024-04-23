@@ -86,21 +86,21 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
                 
                 ignore = False
                 ignore = bool([r for r in US_location_Entities if(r in loc.lower())])
-                #if ignore == False:
-                #   continue 
-                #else:
-                #print(loc,'loc',ignore)
-                Dates.append(new_date)
-                Times.append(new_time)
-                Track_nums.append(tracking_num)
-                Codes.append('')
-                #print('datetime',new_date,time)
-                Descs.append(desc)
-                Locs.append(loc)
-                EventZipCode.append('')
-                IsInHouse.append("FALSE")
-                #print('descloc',desc,loc)
-            
+                if ignore:
+                   continue 
+                else:
+                    #print(loc,'loc',ignore)
+                    Dates.append(new_date)
+                    Times.append(new_time)
+                    Track_nums.append(tracking_num)
+                    Codes.append('')
+                    #print('datetime',new_date,time)
+                    Descs.append(desc)
+                    Locs.append(loc)
+                    EventZipCode.append('')
+                    IsInHouse.append("FALSE")
+                    #print('descloc',desc,loc)
+                
         driver.quit()
         #print(len(Track_nums),len(Codes),len(Descs),len(Dates),len(Times),len(Locs))
         df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs,EventZipCode,IsInHouse)        
