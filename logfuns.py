@@ -1,4 +1,4 @@
-from datetime import datetime,date
+from datetime import datetime,date,timedelta
 import os
 import logging
 import smtplib
@@ -112,7 +112,23 @@ def send_audit_notification(config_data,audit_entries,cur_run_id,postal_ids_to_c
 # Italy CY141191090US
 # Switzerland CY141288363US
 # France CY141194096US
+def change_time(time,date,offset):
+    #print(time,date,offset,'here')
+    hr,mn = [int(x) for x in time.split(":")]
+    yyyy,mm,dd = [int(x) for x in date.split("/")]
+    #print(hr,mn,yyyy,mm,dd,'here')
+    date_time  = datetime(yyyy,mm,dd,hr,mn)
+    time_change = timedelta(hours=offset[0],minutes=offset[1])
+    #print(time_change,'time_change') 
+    new_date_time = date_time + time_change
+    #print(date_time,'date_time')
+    new_date_time_string = new_date_time.strftime("%Y/%m/%d %H:%M")
+    #print(new_date_time_string,'new_date_time')
+    new_date,new_time = new_date_time_string.split(" ")
+    #print(new_date,new_time)
+    return new_time,new_date
 
+"""
 def change_time(time,date,offset):
     #print(time,date,offset,'here')
     hr,mn = [int(x) for x in time.split(":")]
@@ -158,3 +174,4 @@ def change_time(time,date,offset):
     #new_time = time
     #new_date = date
     return new_time,new_date
+"""

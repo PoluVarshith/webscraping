@@ -30,7 +30,7 @@ def change_date_format(date):
 def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     tracking_num,facility_code = tracking_info
-    #tracking_num = 'CY141273077US'
+    #tracking_num = 'CY141258667US'
     try:
         offset = list(config_data['OFFSET'][COUNTRY][str(facility_code)].values())
     except:
@@ -87,6 +87,9 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
             except Exception as e:
                 #print(e)
                 loc = ''
+            if 'us' in loc.lower():
+                #print("breaking")
+                break
             #print(loc)
             Track_nums.append(tracking_num)
             Codes.append('')
