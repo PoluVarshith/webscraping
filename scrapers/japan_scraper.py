@@ -12,21 +12,10 @@ import logfuns
 import snowflake_queries
 import scraper
 from selenium.webdriver.common.proxy import Proxy, ProxyType
-from fp.fp import FreeProxy
-from swiftshadow import QuickProxy
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
-from proxyscrape import create_collector
 
-"""
-The site itself has a button to change french into english
-"""
-"""myProxy = FreeProxy().get()
-myProxy = FreeProxy(country_id=['IND']).get()
-myProxy = "".join([list(QuickProxy().keys())[0],'://',list(QuickProxy().values())[0]])
-"""
-proxy = get_proxy()
-print(proxy)
+
 COUNTRY = 'JAPAN'
 def change_date_format(date):
     #print(date)
@@ -51,11 +40,11 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
     #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
-        """driver = webdriver.Chrome(desired_capabilities=capabilities,
+        driver = webdriver.Chrome(desired_capabilities=capabilities,
             options=options,
             # other properties...
-        )"""
-        
+        )
+
         #driver = webdriver.Edge()
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         #print('present_url',scraping_url)
