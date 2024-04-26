@@ -13,7 +13,7 @@ import snowflake_queries
 import scraper
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
+#from webdriver_manager.chrome import ChromeDriverManager
 
 
 COUNTRY = 'JAPAN'
