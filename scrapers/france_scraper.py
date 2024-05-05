@@ -58,7 +58,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         proxies_extension = proxies(username, password, endpoint, port)
 
         chrome_options.add_extension(proxies_extension)
-        chrome_options.add_argument("--headless=new")
+        #chrome_options.add_argument("--headless=new")
 
         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
         driver.get(scraping_url)
