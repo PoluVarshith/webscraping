@@ -12,6 +12,9 @@ import logfuns
 import snowflake_queries
 import scraper
 from selenium_authenticated_proxy import SeleniumAuthenticatedProxy
+import time
+from threading import Thread
+#import pyautogui
 
 def chrome_proxy(user: str, password: str, endpoint: str) -> dict:
     wire_options = {
@@ -29,6 +32,8 @@ ENDPOINT = 'brd.superproxy.io:22225'
 proxies = chrome_proxy(USERNAME, PASSWORD, ENDPOINT)
 
 
+
+
 COUNTRY = 'JAPAN'
 def change_date_format(date):
     #print(date)
@@ -38,7 +43,7 @@ def change_date_format(date):
     return new_date
 
 def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
-    #options = Options()
+    options = Options()
     chrome_options = webdriver.ChromeOptions()
     proxy_helper = SeleniumAuthenticatedProxy(proxy_url="http://brd-customer-hl_5d2a07b1-zone-scraping_proxy:9efj6pt7z76g@brd.superproxy.io:22225")
     proxy_helper.enrich_chrome_options(chrome_options)
@@ -57,12 +62,14 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
         """driver = webdriver.Chrome(
-            options=options,seleniumwire_options=proxies,
+            options=options,
             # other properties...
         )"""
-        driver = webdriver.Chrome(options=chrome_options)
+        #driver = webdriver.Chrome(options=chrome_options)
 
-        #driver = webdriver.Edge()
+
+
+        driver = webdriver.Edge(options=chrome_options)
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         #print('present_url',scraping_url)
         #driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en') 
