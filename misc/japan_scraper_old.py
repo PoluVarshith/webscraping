@@ -11,31 +11,16 @@ import twrv
 import logfuns
 import snowflake_queries
 import scraper
-from selenium_authenticated_proxy import SeleniumAuthenticatedProxy
+#from selenium_authenticated_proxy import SeleniumAuthenticatedProxy
 from time import sleep
 from threading import Thread
 import pyautogui
 
 
-def chrome_proxy(user: str, password: str, endpoint: str) -> dict:
-    wire_options = {
-        "proxy": {
-            "http": f"http://{user}:{password}@{endpoint}",
-            "https": f"https://{user}:{password}@{endpoint}",
-        }
-    }
-
-    return wire_options
-
-USERNAME = 'brd-customer-hl_5d2a07b1-zone-scraping_proxy'
-PASSWORD = '9efj6pt7z76g'
-ENDPOINT = 'brd.superproxy.io:22225'
-proxies = chrome_proxy(USERNAME, PASSWORD, ENDPOINT)
-
 hostname = "brd.superproxy.io"
 port = "22225"
 proxy_username = "brd-customer-hl_5d2a07b1-zone-scraping_proxy"
-proxy_password = "9efj6pt7z76g"
+proxy_password = "4m9u2j5nl598"
 
 def enter_proxy_auth(proxy_username, proxy_password):
     sleep(3)
@@ -48,6 +33,16 @@ def enter_proxy_auth(proxy_username, proxy_password):
 def open_a_page(driver, url):
     driver.get(url)
 
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from extension import proxies
+
+username = 'brd-customer-hl_5d2a07b1-zone-scraping_proxy'
+password = '4m9u2j5nl598'
+endpoint = 'brd.superproxy.io'
+port = '22225'
+
 
 COUNTRY = 'JAPAN'
 def change_date_format(date):
@@ -58,13 +53,6 @@ def change_date_format(date):
     return new_date
 
 def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
-    #options = Options()
-    #chrome_options = webdriver.ChromeOptions()
-    #proxy_helper = SeleniumAuthenticatedProxy(proxy_url="http://brd-customer-hl_5d2a07b1-zone-scraping_proxy:9efj6pt7z76g@brd.superproxy.io:22225")
-    #proxy_helper.enrich_chrome_options(chrome_options)
-    #options.proxy = proxy
-    #options.add_argument('--headless=new')
-    #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     tracking_num,facility_code = tracking_info
     try:
         offset = list(config_data['OFFSET'][COUNTRY][str(facility_code)].values())
@@ -77,21 +65,19 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
-        """driver = webdriver.Chrome(
-            options=options,
-            # other properties...
-        )"""
-        #driver = webdriver.Chrome(options=chrome_options)
-        #driver = webdriver.Edge(options=chrome_options)
-        chrome_options = Options()
+        """chrome_options = Options()
         chrome_options.add_argument('--proxy-server={}'.format(hostname + ":" + port))
         driver = webdriver.Chrome(options=chrome_options)
 
         Thread(target=open_a_page, args=(driver, scraping_url)).start()
-        Thread(target=enter_proxy_auth, args=(proxy_username, proxy_password)).start()
+        Thread(target=enter_proxy_auth, args=(proxy_username, proxy_password)).start()"""
+        chrome_options = webdriver.ChromeOptions()
+        proxies_extension = proxies(username, password, endpoint, port)
 
-
-        
+        chrome_options.add_extension(proxies_extension)
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        driver.get(scraping_url)
+       
         #print('present_url',scraping_url)
         #driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en') 
         #driver.get(scraping_url)
@@ -162,5 +148,5 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
     tracking_info= tracking_info[:1]
-    batch_size = 5  #20 
+    batch_size = 1 #20 
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)

@@ -12,6 +12,38 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import logfuns
 import scraper
+from time import sleep
+from threading import Thread
+import pyautogui
+
+hostname = "brd.superproxy.io"
+port = "22225"
+proxy_username = "brd-customer-hl_5d2a07b1-zone-scraping_proxy"
+proxy_password = "4m9u2j5nl598"
+
+def enter_proxy_auth(proxy_username, proxy_password):
+    sleep(5)
+    pyautogui.typewrite(proxy_username)
+    pyautogui.press('tab')
+    pyautogui.typewrite(proxy_password)
+    pyautogui.press('enter')
+
+def open_a_page(driver, url):
+    driver.get(url)
+    
+
+
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from extension import proxies
+
+username = 'brd-customer-hl_5d2a07b1-zone-scraping_proxy'
+password = '4m9u2j5nl598'
+endpoint = 'brd.superproxy.io'
+port = '22225'
+
+
 
 COUNTRY = 'FRANCE'
 def change_date_format(date):
@@ -42,24 +74,36 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
     #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
+        scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
+        """chrome_options = Options()
+        #options.add_argument("--headless")
+        chrome_options.add_argument('--proxy-server={}'.format(hostname + ":" + port))
+        driver = webdriver.Chrome(options=chrome_options)
+
+        t1= Thread(target=open_a_page, args=(driver, scraping_url))
+        t2 = Thread(target=enter_proxy_auth, args=(proxy_username, proxy_password))
+        t1.start()
+        t2.start()
+        t1.join()
+        t2.join()
+        sleep(3)"""
+        chrome_options = webdriver.ChromeOptions()
+        proxies_extension = proxies(username, password, endpoint, port)
+
+        chrome_options.add_extension(proxies_extension)
+        #chrome_options.add_argument("--headless=new")
+
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        driver.get(scraping_url)
         #print(scraping_url)
         #scraping_url = "https://www.laposte.fr/ssu/sun/back/suivi-unifie/#TRACKING_NUM#?lang=en_GB"
-        scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         #url = ('https://www.deutschepost.de/int-verfolgen/data/search?piececode=' + str(tracking_num) + '&inputSearch=true&language=en')
-        options = Options()
-        #options.add_argument('--headless=new')
-        driver = webdriver.Chrome(
-            options=options,
-            # other properties...
-        )
-        #driver = webdriver.Edge()
-        #options = FirefoxOptions()
-        #options.add_argument("--headless")
-        #driver = webdriver.Firefox(options=options)
-        driver.get(scraping_url)
-        #driver.implicitly_wait(10)
+        
+        #driver.get(scraping_url)
+        driver.implicitly_wait(50)
         #print(driver.page_source)
         data = driver.find_element(By.TAG_NAME,'body').text
+        #print('hello',type(data),data)
         data = json.loads(data)
         #print(type(data))
         try :
@@ -110,7 +154,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
     
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
-    #tracking_info = tracking_info[:1]
+    tracking_info = tracking_info[:1]
     batch_size = 5
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)
 
