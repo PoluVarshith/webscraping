@@ -20,10 +20,10 @@ import pyautogui
 hostname = "brd.superproxy.io"
 port = "22225"
 proxy_username = "brd-customer-hl_5d2a07b1-zone-scraping_proxy"
-proxy_password = "9efj6pt7z76g"
+proxy_password = "4m9u2j5nl598"
 
 def enter_proxy_auth(proxy_username, proxy_password):
-    sleep(5)
+    sleep(3)
     pyautogui.typewrite(proxy_username)
     pyautogui.press('tab')
     pyautogui.typewrite(proxy_password)
@@ -131,6 +131,6 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
-    tracking_info= tracking_info[:1]
-    batch_size = 5  #20 
+    #tracking_info= tracking_info[:1]
+    batch_size = 1 #20 
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)
