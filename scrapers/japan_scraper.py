@@ -33,6 +33,16 @@ def enter_proxy_auth(proxy_username, proxy_password):
 def open_a_page(driver, url):
     driver.get(url)
 
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from extension import proxies
+
+username = 'brd-customer-hl_5d2a07b1-zone-scraping_proxy'
+password = '4m9u2j5nl598'
+endpoint = 'brd.superproxy.io'
+port = '22225'
+
 
 COUNTRY = 'JAPAN'
 def change_date_format(date):
@@ -55,12 +65,18 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
-        chrome_options = Options()
+        """chrome_options = Options()
         chrome_options.add_argument('--proxy-server={}'.format(hostname + ":" + port))
         driver = webdriver.Chrome(options=chrome_options)
 
         Thread(target=open_a_page, args=(driver, scraping_url)).start()
-        Thread(target=enter_proxy_auth, args=(proxy_username, proxy_password)).start()
+        Thread(target=enter_proxy_auth, args=(proxy_username, proxy_password)).start()"""
+        chrome_options = webdriver.ChromeOptions()
+        proxies_extension = proxies(username, password, endpoint, port)
+
+        chrome_options.add_extension(proxies_extension)
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        driver.get(scraping_url)
        
         #print('present_url',scraping_url)
         #driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en') 
