@@ -11,27 +11,8 @@ import twrv
 import logfuns
 import snowflake_queries
 import scraper
-#from selenium_authenticated_proxy import SeleniumAuthenticatedProxy
 from time import sleep
 from threading import Thread
-import pyautogui
-
-
-hostname = "brd.superproxy.io"
-port = "22225"
-proxy_username = "brd-customer-hl_5d2a07b1-zone-scraping_proxy"
-proxy_password = "4m9u2j5nl598"
-
-def enter_proxy_auth(proxy_username, proxy_password):
-    sleep(3)
-    pyautogui.typewrite(proxy_username)
-    pyautogui.press('tab')
-    pyautogui.typewrite(proxy_password)
-    pyautogui.press('enter')
-
-
-def open_a_page(driver, url):
-    driver.get(url)
 
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
@@ -65,12 +46,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
-        """chrome_options = Options()
-        chrome_options.add_argument('--proxy-server={}'.format(hostname + ":" + port))
-        driver = webdriver.Chrome(options=chrome_options)
-
-        Thread(target=open_a_page, args=(driver, scraping_url)).start()
-        Thread(target=enter_proxy_auth, args=(proxy_username, proxy_password)).start()"""
+        
         chrome_options = webdriver.ChromeOptions()
         proxies_extension = proxies(username, password, endpoint, port)
 
