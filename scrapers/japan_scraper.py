@@ -11,9 +11,22 @@ import twrv
 import logfuns
 import snowflake_queries
 import scraper
-from selenium.webdriver.common.proxy import Proxy, ProxyType
-from selenium.webdriver.chrome.service import Service as ChromeService
-#from webdriver_manager.chrome import ChromeDriverManager
+from selenium_authenticated_proxy import SeleniumAuthenticatedProxy
+
+def chrome_proxy(user: str, password: str, endpoint: str) -> dict:
+    wire_options = {
+        "proxy": {
+            "http": f"http://{user}:{password}@{endpoint}",
+            "https": f"https://{user}:{password}@{endpoint}",
+        }
+    }
+
+    return wire_options
+
+USERNAME = 'brd-customer-hl_5d2a07b1-zone-scraping_proxy'
+PASSWORD = '9efj6pt7z76g'
+ENDPOINT = 'brd.superproxy.io:22225'
+proxies = chrome_proxy(USERNAME, PASSWORD, ENDPOINT)
 
 
 COUNTRY = 'JAPAN'
@@ -25,7 +38,10 @@ def change_date_format(date):
     return new_date
 
 def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
-    options = Options()
+    #options = Options()
+    chrome_options = webdriver.ChromeOptions()
+    proxy_helper = SeleniumAuthenticatedProxy(proxy_url="http://brd-customer-hl_5d2a07b1-zone-scraping_proxy:9efj6pt7z76g@brd.superproxy.io:22225")
+    proxy_helper.enrich_chrome_options(chrome_options)
     #options.proxy = proxy
     #options.add_argument('--headless=new')
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
@@ -40,10 +56,11 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
     #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
-        driver = webdriver.Chrome(desired_capabilities=capabilities,
-            options=options,
+        """driver = webdriver.Chrome(
+            options=options,seleniumwire_options=proxies,
             # other properties...
-        )
+        )"""
+        driver = webdriver.Chrome(options=chrome_options)
 
         #driver = webdriver.Edge()
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
@@ -116,6 +133,6 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
-    #tracking_info= tracking_info[:1]
+    tracking_info= tracking_info[:1]
     batch_size = 5  #20 
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)
