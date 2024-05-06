@@ -53,7 +53,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     #try:
     scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
-    #print('present_url',scraping_url)
+    #print('present_url',scraping_url)  
     #print(tracking_num)
     options = Options()
     #options.add_argument('--headless=new')
