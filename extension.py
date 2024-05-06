@@ -1,5 +1,5 @@
 import zipfile
-
+#https://github.com/Smartproxy/Selenium-proxy-authentication/blob/master/main.py
 
 def proxies(username, password, endpoint, port):
     manifest_json = """
