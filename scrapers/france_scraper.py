@@ -68,6 +68,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         
         #driver.get(scraping_url)
         driver.implicitly_wait(50)
+        sleep(5)
         #print(driver.page_source)
         data = driver.find_element(By.TAG_NAME,'body').text
         #print('hello',type(data),data)

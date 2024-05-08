@@ -59,7 +59,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         #driver.get(scraping_url)
         #driver.maximize_window()
         driver.implicitly_wait(50)
-
+        sleep(5)
         Table = driver.find_elements(By.CLASS_NAME,'tableType01.txt_c.m_b5')[1]
         #print((Table))
         #table = Table.find_elements(By.XPATH,'./*')[1]

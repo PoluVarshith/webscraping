@@ -18,7 +18,7 @@ It needs 30 sec to load fully,  So wai implicitly_wait for 30
 COUNTRY = 'AUSTRIA'
 def change_date_format(date):
     #print(date)
-    month_dict = {'JÄN':'01','FEB':'02','MÄR':'03','ÄPR':'04','APR':'04','MÄY':'05','JUN':'06','JUL':'07','ÄUG':'08','SEP':'09','OCT':'10','NOV':'11','DEC':'12'}
+    month_dict = {'JÄN':'01','FEB':'02','MÄR':'03','ÄPR':'04','APR':'04','MAI':'05','JUN':'06','JUL':'07','ÄUG':'08','AUG':'08','SEP':'09','OKT':'10','NOV':'11','DEC':'12'}
     d,m = date.split(" ")
     d = "%02d" % int(d) if int(d) < 10 else d 
     m = month_dict[m]
