@@ -19,8 +19,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from extension import proxies
 
-username = 'brd-customer-hl_5d2a07b1-zone-scraping_proxy'
-password = '4m9u2j5nl598'
+username = 'brd-customer-hl_362b954c-zone-datacenter_proxy_webscrapping'
+password = 'hw45y9uthgvp'
 endpoint = 'brd.superproxy.io'
 port = '22225'
 
@@ -123,6 +123,6 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
-    #tracking_info= tracking_info[:8]
+    tracking_info= tracking_info[:1]
     batch_size = 4 #20 
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)
