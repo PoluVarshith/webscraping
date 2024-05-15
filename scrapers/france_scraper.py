@@ -12,17 +12,16 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import logfuns
 import scraper
-
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from extension import proxies
 from time import sleep
 
-username = 'brd-customer-hl_5d2a07b1-zone-scraping_proxy'
+"""username = 'brd-customer-hl_5d2a07b1-zone-scraping_proxy'
 password = '4m9u2j5nl598'
 endpoint = 'brd.superproxy.io'
-port = '22225'
+port = '22225'"""
 
 COUNTRY = 'FRANCE'
 def change_date_format(date):
@@ -47,7 +46,17 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         offset = list(config_data['OFFSET'][COUNTRY][str(facility_code)].values())
     except:
         offset = [0,0]
-        
+    try:
+        proxy_details = config_data['PROXY_DETAILS']
+        #print('proxy_details',proxy_details)
+        username = proxy_details['username']
+        password = proxy_details['password']
+        endpoint = proxy_details['endpoint']
+        port = proxy_details['port']
+        #print('proxy_details',username,password,endpoint,port)
+    except Exception as e:
+        print('error ',e)
+
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
     #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
@@ -60,7 +69,6 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 
         chrome_options.add_extension(proxies_extension)
         #chrome_options.add_argument("--headless=new")
-
         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
         driver.get(scraping_url)
         #print(scraping_url)
@@ -123,7 +131,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
     
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
-    tracking_info = tracking_info[:3]
+    #tracking_info = tracking_info[:3]
     batch_size = 5
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)
 

@@ -13,6 +13,11 @@ from selenium.webdriver.support import expected_conditions as EC
 import logfuns
 import scraper
 import re
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from extension import proxies
+from time import sleep
 """
 This website can track more than one shipment
 """
@@ -40,6 +45,16 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         offset = list(config_data['OFFSET'][COUNTRY][str(facility_code)].values())
     except:
         offset = [0,0]
+    try:
+        proxy_details = config_data['PROXY_DETAILS']
+        #print('proxy_details',proxy_details)
+        username = proxy_details['username']
+        password = proxy_details['password']
+        endpoint = proxy_details['endpoint']
+        port = proxy_details['port']
+        #print('proxy_details',username,password,endpoint,port)
+    except Exception as e:
+        print('error ',e)
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
     #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
@@ -49,16 +64,21 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         scraping_url = scraping_url.replace('#TRACKING_NUM#',str(tracking_num))
         #print('present_url',scraping_url)
         #url = ('https://www.deutschepost.de/int-verfolgen/data/search?piececode=' + str(tracking_num) + '&inputSearch=true&language=en')
-        options = Options()
+        """options = Options()
         #options.add_argument('--headless=new')
         driver = webdriver.Chrome(
             options=options,
             # other properties...
-        )
-        #driver = webdriver.Edge()
-        #options = FirefoxOptions()
+        )"""
         #options.add_argument("--headless")
         #driver = webdriver.Firefox(options=options)
+        chrome_options = webdriver.ChromeOptions()
+        proxies_extension = proxies(username, password, endpoint, port)
+
+        chrome_options.add_extension(proxies_extension)
+        #chrome_options.add_argument("--headless=new")
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
         driver.get(scraping_url)
         #driver.implicitly_wait(10)
         #print(driver.page_source)

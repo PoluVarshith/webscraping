@@ -5,6 +5,11 @@ import twrv
 import logfuns
 import snowflake_queries
 import scraper
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from extension import proxies
+from time import sleep
 """
 Spain website can only track one item
 It needs 30 sec to load fully,  So wait implicitly_wait for 30
@@ -32,6 +37,16 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         offset = list(config_data['OFFSET'][COUNTRY][str(facility_code)].values())
     except:
         offset = [0,0]
+    try:
+        proxy_details = config_data['PROXY_DETAILS']
+        #print('proxy_details',proxy_details)
+        username = proxy_details['username']
+        password = proxy_details['password']
+        endpoint = proxy_details['endpoint']
+        port = proxy_details['port']
+        #print('proxy_details',username,password,endpoint,port)
+    except Exception as e:
+        print('error ',e)
 
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
