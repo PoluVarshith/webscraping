@@ -47,7 +47,7 @@ def change_time_format(time,format):
 def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     tracking_num,facility_code = tracking_info
-    #tracking_num = 'CY363920096US'
+    #tracking_num = 'CY363928611US'
     try:
         offset = list(config_data['OFFSET'][COUNTRY][str(facility_code)].values())
     except:
@@ -91,7 +91,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         translate = driver.find_element(By.CLASS_NAME,'translate')
         translate =translate.find_element(By.TAG_NAME,'label')
         translate.click()
-        sleep(30)
+        sleep(10)
             
         Track_nums = []
         Codes = []
@@ -103,32 +103,47 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         IsInHouse = []
         list = driver.find_element(By.CLASS_NAME,'tracking-list-package-content')
         list = list.find_elements(By.TAG_NAME,'ul')
-        for l in list:
-            Table = l.find_elements(By.TAG_NAME,'li')
-            #print('len',len(Table))
 
-            for t in Table:
-                date_time = t.find_element(By.TAG_NAME,'time').text
-                date, time , format = date_time.split(" ")
-                new_time = change_time_format(time,format)
-                new_date = change_date_format(date)
-                desc = t.find_element(By.CLASS_NAME,'info').text
-                desc_tok = desc.split(".")
-                desc = desc_tok[0]
-                loc = ".".join(desc_tok[1:])
-                #print(new_date,new_time,format,desc,'******',loc)
-            
-                Dates.append(new_date)
-                Times.append(new_time)
-                Track_nums.append(tracking_num)
-                Codes.append('')
-                #print('datetime',new_date,time)
-                Descs.append(desc)
-                Locs.append(loc)
-                EventZipCode.append('')
-                IsInHouse.append("FALSE")
-                #print('descloc',desc,loc)
+        USPS_TABLE = list[1].find_elements(By.TAG_NAME,'li')
+        #print(len(USPS_TABLE))
+        usps_dates = []
+        usps_times = []
+        for t in USPS_TABLE:
+            date_time = t.find_element(By.TAG_NAME,'time').text
+            #print(date_time)
+            date, time , format = date_time.split(" ")
+            new_time = change_time_format(time,format)
+            new_date = change_date_format(date)
+            usps_dates.append(new_date)
+            usps_times.append(new_time)
+        #print(usps_dates,usps_times)
+        CHILE_TABLE = list[0].find_elements(By.TAG_NAME,'li')
+        #print(len(CHILE_TABLE))
 
+        for t in CHILE_TABLE:
+            date_time = t.find_element(By.TAG_NAME,'time').text
+            date, time , format = date_time.split(" ")
+            new_time = change_time_format(time,format)
+            new_date = change_date_format(date)
+            if new_time in usps_times and new_date in usps_dates:
+                continue
+            desc = t.find_element(By.CLASS_NAME,'info').text
+            desc_tok = desc.split(".")
+            desc = desc_tok[0]
+            loc = ".".join(desc_tok[1:])
+            #print(new_date,new_time,format,desc,'******',loc)
+        
+            Dates.append(new_date)
+            Times.append(new_time)
+            Track_nums.append(tracking_num)
+            Codes.append('')
+            #print('datetime',new_date,time)
+            Descs.append(desc)
+            Locs.append(loc)
+            EventZipCode.append('')
+            IsInHouse.append("FALSE")
+            #print('descloc',desc,loc)
+        #print(Dates,Times)
         driver.quit()
         #print(len(Track_nums),len(Codes),len(Descs),len(Dates),len(Times),len(Locs))
         df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs,EventZipCode,IsInHouse)        
