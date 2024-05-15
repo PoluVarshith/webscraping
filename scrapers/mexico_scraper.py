@@ -86,8 +86,8 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         input.send_keys(tracking_num)
         button = driver.find_element(By.CLASS_NAME,'btn.btn-primary')
         button.click()
-        try:
-            error = driver.find_element(By.CLASS_NAME)
+        #try:
+        #    error = driver.find_element(By.CLASS_NAME)
         #driver.implicitly_wait(100)
         #sleep(5)
             
