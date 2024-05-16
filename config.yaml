@@ -31,11 +31,13 @@ RECEIVERS:
 #LOG_PATH : E:\3rd_Party_Scheduler\WebScraping\logs
 
 LOG_PATH : .\logs
+
 PROXY_DETAILS:
   username: brd-customer-hl_362b954c-zone-datacenter_proxy_webscrapping
   password: hw45y9uthgvp
   endpoint: brd.superproxy.io
   port: 22225
+  
 OFFSET :
   AUSTRIA :
     LAX :
