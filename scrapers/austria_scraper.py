@@ -36,6 +36,7 @@ def change_date_format(date):
 def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,failed_tracking_nos,scraping_url,country_logger,log_country_dir_path,config_data):
     #country_logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     tracking_num,facility_code = tracking_info
+    logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
     #tracking_num = 'CY141258667US'
     try:
         offset = list(config_data['OFFSET'][COUNTRY][str(facility_code)].values())
@@ -50,10 +51,9 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         port = proxy_details['port']
         #print('proxy_details',username,password,endpoint,port)
     except Exception as e:
-        print('error ',e)
+        logger.info('proxy error:  '+str(e))
 
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
-    logger = logfuns.set_logger(log_country_dir_path,tracking_num=tracking_num)
     #logger.info('CURRENT TIME STAMP '+ str(logfuns.get_date_time()))
     logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
     try:
@@ -70,7 +70,8 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         proxies_extension = proxies(username, password, endpoint, port)
 
         chrome_options.add_extension(proxies_extension)
-        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        #driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        driver = webdriver.Chrome(options=chrome_options)
 
         driver.get(scraping_url)
         #driver.get('https://www.post.at/s/sendungsdetails?snr=CJ499904901US')
@@ -145,5 +146,5 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
     #tracking_info = tracking_info[:1]
-    batch_size = 3
+    batch_size = 2
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)

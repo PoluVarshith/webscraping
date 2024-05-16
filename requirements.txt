@@ -5,4 +5,4 @@ SQLAlchemy
 snowflake-connector-python
 snowflake-sqlalchemy
 deep-translator
-webdriver-manager
+webdriver_manager
