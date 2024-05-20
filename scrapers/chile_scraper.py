@@ -90,7 +90,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 
         #driver.get('https://service.post.ch/ekp-web/ui/entry/search/' + str(tracking_num))
         driver.get(scraping_url)
-        driver.implicitly_wait(20)
+        driver.implicitly_wait(15)
         button = driver.find_element(By.CLASS_NAME,'more-btn')
         button.click()
         translate = driver.find_element(By.CLASS_NAME,'translate')
@@ -172,6 +172,6 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 
 #get_trackinginfo(tracking_num)
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
-    #tracking_info = tracking_info[:1]
+    #tracking_info = tracking_info[:4]
     batch_size = 1
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)

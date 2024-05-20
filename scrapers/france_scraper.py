@@ -79,7 +79,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         #url = ('https://www.deutschepost.de/int-verfolgen/data/search?piececode=' + str(tracking_num) + '&inputSearch=true&language=en')
         
         #driver.get(scraping_url)
-        driver.implicitly_wait(5)
+        #driver.implicitly_wait(5)
         #print(driver.page_source)
         data = driver.find_element(By.TAG_NAME,'body').text
         #print('hello',type(data),data)

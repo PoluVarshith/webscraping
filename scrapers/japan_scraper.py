@@ -70,7 +70,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         #driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en') 
         #driver.get(scraping_url)
         #driver.maximize_window()
-        driver.implicitly_wait(10)
+        #driver.implicitly_wait(10)
         Table = driver.find_elements(By.CLASS_NAME,'tableType01.txt_c.m_b5')[1]
         #print((Table))
         #table = Table.find_elements(By.XPATH,'./*')[1]
@@ -136,6 +136,6 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
-    #tracking_info= tracking_info[:1]
+    #tracking_info= tracking_info[:3]
     batch_size = 1 #20 
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)

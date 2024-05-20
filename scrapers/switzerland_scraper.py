@@ -73,7 +73,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         #driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
         driver = webdriver.Chrome(options=chrome_options)
         driver.get(scraping_url)
-        driver.implicitly_wait(10)
+        #driver.implicitly_wait(10)
         
         main = driver.find_element(By.TAG_NAME,'ekp-event-timeline')
         try:
@@ -146,6 +146,6 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 
 #get_trackinginfo(tracking_num)
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
-    #tracking_info = tracking_info[:1]
+    #tracking_info = tracking_info[:3]
     batch_size = 1
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)

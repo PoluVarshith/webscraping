@@ -78,7 +78,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         driver.get(scraping_url)
         #driver.get('https://www.post.at/s/sendungsdetails?snr=CJ499904901US')
         #driver.maximize_window()
-        driver.implicitly_wait(10)
+        #driver.implicitly_wait(10)
         #track = driver.find_element(By.NAME,'tracking_search')
         #rack.send_keys(tracking_num)
         #track.send_keys(Keys.RETURN)

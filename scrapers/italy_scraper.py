@@ -77,7 +77,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         #print('present_url',scraping_url)
         driver.get(scraping_url)
         #driver.maximize_window()
-        driver.implicitly_wait(10)
+        #driver.implicitly_wait(10)
         #track = driver.find_element(By.CLASS_NAME,'form-control')
         #track.send_keys(tracking_num)
         #track.send_keys(Keys.RETURN)
@@ -151,6 +151,6 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 #get_trackinginfo(tracking_num)
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
-    #tracking_info = tracking_info[:1]
+    #tracking_info = tracking_info[:3]
     batch_size = 1
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)

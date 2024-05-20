@@ -84,7 +84,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         driver = webdriver.Chrome(options=chrome_options)
 
         driver.get(scraping_url)
-        driver.implicitly_wait(5)
+        #driver.implicitly_wait(5)
         #print(driver.page_source)
         data = driver.find_element(By.TAG_NAME,'body').text
         data = json.loads(data)
@@ -151,6 +151,6 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
     
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
-    #tracking_info = tracking_info[:1]
+    #tracking_info = tracking_info[:4]
     batch_size = 1
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)
