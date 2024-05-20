@@ -48,6 +48,8 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         port = proxy_details['port']
         #print('proxy_details',username,password,endpoint,port)
     except Exception as e:
+        driver.quit()
+        country_logger.info('End of Scraping for : '+ str(tracking_num))
         logger.info('proxy error:  '+str(e))
         
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
@@ -68,13 +70,57 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         #driver.get('https://trackings.post.japanpost.jp/services/srv/search/direct?reqCodeNo1=' + str(tracking_num) + '&searchKind=S002&locale=en') 
         #driver.get(scraping_url)
         #driver.maximize_window()
-        driver.implicitly_wait(50)
-        sleep(5)
+        driver.implicitly_wait(10)
         Table = driver.find_elements(By.CLASS_NAME,'tableType01.txt_c.m_b5')[1]
         #print((Table))
         #table = Table.find_elements(By.XPATH,'./*')[1]
         body = Table.find_elements(By.XPATH,'./*')[0]
         CourseEntries = body.find_elements(By.XPATH,'./*')
+    
+        #print(len(CourseEntries))
+        Track_nums = []
+        Codes = []
+        Dates = []
+        Times = []
+        Descs = []
+        Locs = []
+        EventZipCode = []
+        IsInHouse = []
+        for i in range(2,len(CourseEntries),2):
+            date_time = CourseEntries[i].find_element(By.CLASS_NAME,'w_120').get_attribute('innerText')
+            try:
+                date,time = date_time.split(" ")
+                date = change_date_format(date)
+            except Exception as e:
+            #print(e)
+                date = date_time
+                time = " "
+            #print(date,time)
+            desc = CourseEntries[i].find_element(By.CLASS_NAME,'w_150').get_attribute('innerText')
+            #print(desc)
+            locs = CourseEntries[i].find_elements(By.CLASS_NAME,'w_105')
+            loc0 = locs[0].get_attribute('innerText')
+            loc2 = locs[1].get_attribute('innerText')
+            loc1 = CourseEntries[i+1].find_element(By.CLASS_NAME,'w_105').get_attribute('innerText')
+            loc = loc0 +  ' ' + loc1 +' '+ loc2
+            #print(loc)
+            Track_nums.append(tracking_num)
+            Codes.append('')
+            Descs.append(desc)
+            Dates.append(date)
+            Times.append(time)
+            Locs.append(loc)
+            EventZipCode.append('')
+            IsInHouse.append("FALSE")
+
+        #print('lengths',len(Dates),len(Times),len(Descs),len(Times),len(Track_nums))
+        driver.quit()
+        df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs,EventZipCode,IsInHouse)
+        logger.info(str(df[['EventDesc','EventDate','EventTime','EventLocation']]))
+        country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
+        scraped_tracking_nos.append(str(tracking_num))
+        return df
+
     except Exception as e:
         country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
         country_logger.info('Error: '+ str(e))
@@ -82,57 +128,14 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
             discarded_tracking_nos.append(str(tracking_num))
         else:
             failed_tracking_nos.append(str(tracking_num))
+        driver.quit()
+        country_logger.info('End of Scraping for : '+ str(tracking_num))
         return tocsv.emtpy_frame()
-    
-    #print(len(CourseEntries))
-    Track_nums = []
-    Codes = []
-    Dates = []
-    Times = []
-    Descs = []
-    Locs = []
-    EventZipCode = []
-    IsInHouse = []
-    for i in range(2,len(CourseEntries),2):
-        date_time = CourseEntries[i].find_element(By.CLASS_NAME,'w_120').get_attribute('innerText')
-        try:
-            date,time = date_time.split(" ")
-            date = change_date_format(date)
-        except Exception as e:
-        #print(e)
-            date = date_time
-            time = " "
-        #print(date,time)
-        desc = CourseEntries[i].find_element(By.CLASS_NAME,'w_150').get_attribute('innerText')
-        #print(desc)
-        locs = CourseEntries[i].find_elements(By.CLASS_NAME,'w_105')
-        loc0 = locs[0].get_attribute('innerText')
-        loc2 = locs[1].get_attribute('innerText')
-        loc1 = CourseEntries[i+1].find_element(By.CLASS_NAME,'w_105').get_attribute('innerText')
-        loc = loc0 +  ' ' + loc1 +' '+ loc2
-        #print(loc)
-        Track_nums.append(tracking_num)
-        Codes.append('')
-        Descs.append(desc)
-        Dates.append(date)
-        Times.append(time)
-        Locs.append(loc)
-        EventZipCode.append('')
-        IsInHouse.append("FALSE")
-
-    #print('lengths',len(Dates),len(Times),len(Descs),len(Times),len(Track_nums))
-    driver.quit()
-    df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs,EventZipCode,IsInHouse)
-    logger.info(str(df[['EventDesc','EventDate','EventTime','EventLocation']]))
-    country_logger.info(str(tracking_num) +' scraping successful , Scraping_URL: ' + str(scraping_url))
-    scraped_tracking_nos.append(str(tracking_num))
-    return df
-
 
 #get_trackinginfo(tracking_num)
 
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
     #tracking_info= tracking_info[:1]
-    batch_size = 5 #20 
+    batch_size = 1 #20 
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)

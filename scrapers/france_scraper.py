@@ -56,6 +56,8 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         port = proxy_details['port']
         #print('proxy_details',username,password,endpoint,port)
     except Exception as e:
+        driver.quit()
+        country_logger.info('End of Scraping for : '+ str(tracking_num))
         logger.info('proxy error:  '+str(e))
 
     country_logger.info('CURRENT TRACKING NUMBER ' + str(tracking_num))
@@ -77,8 +79,7 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         #url = ('https://www.deutschepost.de/int-verfolgen/data/search?piececode=' + str(tracking_num) + '&inputSearch=true&language=en')
         
         #driver.get(scraping_url)
-        driver.implicitly_wait(50)
-        sleep(5)
+        driver.implicitly_wait(5)
         #print(driver.page_source)
         data = driver.find_element(By.TAG_NAME,'body').text
         #print('hello',type(data),data)
@@ -89,11 +90,13 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         except Exception as e:
             country_logger.info(str(tracking_num) +' scraping failed , Scraping_URL: ' + str(scraping_url))
             country_logger.info(str(tracking_num) +' Error : "no data available?  ' + str(scraping_url))
+            driver.quit()
+            country_logger.info('End of Scraping for : '+ str(tracking_num))
             discarded_tracking_nos.append(str(tracking_num))
             return tocsv.emtpy_frame()
         #print(len(events))
         #print(events)
-        driver.close()
+
         Track_nums = []
         Codes = []
         Dates = []
@@ -115,6 +118,9 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
             Locs.append('')
             EventZipCode.append('')
             IsInHouse.append("FALSE")
+        
+        driver.quit()
+        country_logger.info('End of Scraping for : '+ str(tracking_num))
         #print(len(Track_nums),len(Codes),len(Descs),len(Dates),len(Times),len(Locs))
         df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs,EventZipCode,IsInHouse)
         logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
@@ -126,6 +132,8 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         country_logger.info('Error: '+ str(e))
         #if "Unable to locate element" in str(e):
         failed_tracking_nos.append(str(tracking_num))
+        driver.quit()
+        country_logger.info('End of Scraping for : '+ str(tracking_num))
         return tocsv.emtpy_frame()
 
 #get_trackinginfo(tracking_num)
@@ -133,6 +141,6 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #print(len(tracking_nums))
     #tracking_info = tracking_info[:3]
-    batch_size = 5
+    batch_size = 1
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)
 

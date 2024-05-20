@@ -64,6 +64,8 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
         port = proxy_details['port']
         #print('proxy_details',username,password,endpoint,port)
     except Exception as e:
+        driver.quit()
+        country_logger.info('End of Scraping for : '+ str(tracking_num))
         logger.info('proxy error:  '+str(e))
 
 
@@ -88,13 +90,13 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
 
         #driver.get('https://service.post.ch/ekp-web/ui/entry/search/' + str(tracking_num))
         driver.get(scraping_url)
-        driver.implicitly_wait(120)
+        driver.implicitly_wait(20)
         button = driver.find_element(By.CLASS_NAME,'more-btn')
         button.click()
         translate = driver.find_element(By.CLASS_NAME,'translate')
         translate =translate.find_element(By.TAG_NAME,'label')
         translate.click()
-        sleep(10)
+        sleep(5)
             
         Track_nums = []
         Codes = []
@@ -148,6 +150,8 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
             #print('descloc',desc,loc)
         #print(Dates,Times)
         driver.quit()
+        country_logger.info('End of Scraping for : '+ str(tracking_num))
+
         #print(len(Track_nums),len(Codes),len(Descs),len(Dates),len(Times),len(Locs))
         df = tocsv.make_frame(Track_nums,Codes,Descs,Dates,Times,Locs,EventZipCode,IsInHouse)        
         logger.info(str((df[['EventDesc','EventDate','EventTime','EventLocation']])))
@@ -162,10 +166,12 @@ def get_trackinginfo(tracking_info,scraped_tracking_nos,discarded_tracking_nos,f
             discarded_tracking_nos.append(str(tracking_num))
         else:
             failed_tracking_nos.append(str(tracking_num))
+        driver.quit()
+        country_logger.info('End of Scraping for : '+ str(tracking_num))
         return tocsv.emtpy_frame()
 
 #get_trackinginfo(tracking_num)
 def scrape(tracking_info,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data):
     #tracking_info = tracking_info[:1]
-    batch_size = 4
+    batch_size = 1
     scraper.scrape_list(COUNTRY,get_trackinginfo,tracking_info,batch_size,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)
