@@ -35,7 +35,14 @@ def main():
         #output_path = output_dir_path  #######IN LOCAL#######      
         c_audit = {}
         c_audit['POSTAL_SITE_ID'] = postal_site_id
-        scraper.scrape_country(country,query,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)
+        threads.append(twrv.ThreadWithReturnValue(target=scraper.scrape_country, args=(country,query,scraping_url,output_path,logger,log_dir_path,c_audit,output_dir_path,cur_run_id,config_data)))
+
+    for t in threads:
+        t.start()
+
+    for t in threads:
+        returns.append(t.join())
+
     snowflake_queries.check_audit_status(cur_run_id,config_data)
 
 main()
